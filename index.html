@@ -30,6 +30,26 @@
     --radius-sm:10px;
     --shadow:0 1px 2px rgba(20,17,90,.06), 0 4px 16px rgba(20,17,90,.06);
   }
+  html[data-theme="dark"]{
+    --primary:#B4B2FF;
+    --on-primary:#211F6B;
+    --primary-container:#37357F;
+    --on-primary-container:#E2E0FF;
+    --secondary:#5FDCC9;
+    --secondary-container:#00504A;
+    --bg:#131218;
+    --surface:#1C1B23;
+    --surface-container:#26242E;
+    --surface-container-high:#302E3A;
+    --outline:#39373F;
+    --text:#EAE7F0;
+    --text-secondary:#B4B0BE;
+    --text-tertiary:#8B8894;
+    --done:#4B4954;
+    --error:#FF897D;
+    --shadow:0 1px 2px rgba(0,0,0,.25), 0 4px 16px rgba(0,0,0,.3);
+  }
+  html{transition:background-color .2s ease;}
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{
@@ -56,18 +76,84 @@
 
   /* ---------- Onboarding ---------- */
   .onboard{
-    flex:1;display:flex;flex-direction:column;justify-content:center;
-    padding:32px 28px calc(28px + env(safe-area-inset-bottom));
-    gap:28px;
+    flex:1;display:flex;flex-direction:column;justify-content:flex-start;
+    padding:calc(24px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
+    gap:16px;overflow-y:auto;
   }
+  .onboard-top-row{display:flex;align-items:center;gap:12px;margin-bottom:2px;}
   .onboard-mark{
-    width:64px;height:64px;border-radius:20px;background:var(--primary);
-    display:flex;align-items:center;justify-content:center;
+    width:44px;height:44px;border-radius:14px;background:var(--primary);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
     box-shadow:var(--shadow);
   }
-  .onboard-mark svg{width:32px;height:32px;}
-  .onboard h1{font-size:26px;line-height:1.25;font-weight:600;margin:0;letter-spacing:-.2px;}
-  .onboard p{font-size:15px;line-height:1.55;color:var(--text-secondary);margin:0;}
+  .onboard-mark svg{width:22px;height:22px;}
+  .onboard h1{font-size:22px;line-height:1.2;font-weight:700;margin:0;letter-spacing:-.2px;}
+
+  .quick-continue{
+    background:var(--primary);border-radius:var(--radius-lg);padding:14px 16px;
+    display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow);
+  }
+  .qc-label{font-size:11px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.75);text-transform:uppercase;}
+  .qc-btn{
+    border:none;background:rgba(255,255,255,.14);border-radius:var(--radius-md);
+    padding:12px 14px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;
+    color:#fff;text-align:left;
+  }
+  .qc-btn:active{background:rgba(255,255,255,.22);}
+  .qc-group{font-size:17px;font-weight:700;}
+  .qc-sub{font-size:12.5px;color:rgba(255,255,255,.8);}
+
+  .gh-block{display:flex;flex-direction:column;gap:8px;}
+  .gh-label{font-size:12px;font-weight:600;color:var(--text-tertiary);letter-spacing:.3px;text-transform:uppercase;padding:0 2px;}
+  .gh-card{
+    background:var(--surface);border-radius:var(--radius-lg);padding:16px 18px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:4px;text-align:left;
+    border:none;width:100%;
+  }
+  .gh-card:active{background:var(--surface-container);}
+  .gh-loading{flex-direction:row;align-items:center;gap:10px;color:var(--text-secondary);font-size:13.5px;}
+  .spinner-dark{border-color:rgba(75,74,219,.2);border-top-color:var(--primary);}
+  .gh-card .gh-name{font-size:16px;font-weight:700;}
+  .gh-card .gh-meta{font-size:12.5px;color:var(--text-tertiary);}
+  .gh-card .gh-tag{
+    display:inline-flex;align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.3px;
+    color:var(--secondary);background:var(--secondary-container);padding:3px 8px;border-radius:100px;
+    margin-bottom:2px;text-transform:uppercase;
+  }
+  .gh-error{color:var(--text-tertiary);font-size:13px;padding:4px 2px;}
+
+  .tile-upload{
+    display:flex;align-items:center;gap:14px;
+    border:1.5px dashed var(--outline);border-radius:var(--radius-lg);
+    background:var(--surface);padding:16px 18px;transition:border-color .15s ease, background .15s ease;
+  }
+  .tile-upload.drag{border-color:var(--primary);background:var(--primary-container);}
+  .tile-upload-icon{
+    width:42px;height:42px;border-radius:12px;background:var(--surface-container-high);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--text-secondary);
+  }
+  .tile-upload-icon svg{width:22px;height:22px;}
+  .tile-upload .drop-title{font-size:15px;font-weight:600;margin-bottom:2px;}
+  .tile-upload .drop-sub{font-size:12.5px;color:var(--text-tertiary);}
+
+  .gh-older-wrap{display:flex;flex-direction:column;gap:8px;}
+  .gh-expand-btn{
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    border:none;background:transparent;color:var(--text-secondary);font-size:13px;font-weight:500;
+    padding:8px;border-radius:100px;
+  }
+  .gh-expand-btn svg{width:15px;height:15px;transition:transform .2s ease;}
+  .gh-expand-btn.open svg{transform:rotate(180deg);}
+  .gh-older-list{display:flex;flex-direction:column;gap:8px;}
+  .gh-older-item{
+    display:flex;flex-direction:column;gap:2px;text-align:left;
+    background:var(--surface-container);border:none;border-radius:var(--radius-md);
+    padding:11px 14px;
+  }
+  .gh-older-item:active{background:var(--surface-container-high);}
+  .gh-older-item .gh-name{font-size:13.5px;font-weight:600;}
+  .gh-older-item .gh-meta{font-size:11.5px;color:var(--text-tertiary);}
+
   .drop{
     border:1.5px dashed var(--outline);
     border-radius:var(--radius-lg);
@@ -320,6 +406,68 @@
   .sheet-row.danger svg{color:var(--error);}
   .sheet-info{padding:2px 4px 14px;font-size:12.5px;color:var(--text-tertiary);border-bottom:1px solid var(--outline);margin-bottom:6px;}
 
+  .sheet-toggle-row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 4px;
+  }
+  .sheet-toggle-label{display:flex;align-items:center;gap:14px;font-size:15px;color:var(--text);}
+  .sheet-toggle-label svg{width:20px;height:20px;color:var(--text-secondary);flex-shrink:0;}
+  .switch{
+    width:46px;height:27px;border-radius:100px;border:none;background:var(--outline);
+    position:relative;flex-shrink:0;transition:background .18s ease;padding:0;
+  }
+  .switch .switch-knob{
+    position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s ease;
+  }
+  .switch[aria-checked="true"]{background:var(--primary);}
+  .switch[aria-checked="true"] .switch-knob{transform:translateX(19px);}
+
+  /* ---------- Share sheet ---------- */
+  .share-title{font-size:17px;font-weight:700;text-align:center;padding:4px 4px 14px;}
+  .share-qr-wrap{display:flex;justify-content:center;padding:4px 4px 16px;}
+  .share-qr-wrap img{border-radius:var(--radius-md);background:#fff;padding:10px;box-shadow:var(--shadow);}
+  .share-link-row{
+    display:flex;align-items:center;gap:8px;background:var(--surface-container);
+    border-radius:var(--radius-md);padding:11px 8px 11px 14px;margin-bottom:14px;
+  }
+  .share-link-text{flex:1;font-size:12.5px;color:var(--text-secondary);font-family:'Roboto Mono',monospace;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .share-copy-btn{
+    border:none;background:var(--surface-container-high);color:var(--text);font-size:12.5px;font-weight:500;
+    padding:8px 12px;border-radius:100px;flex-shrink:0;
+  }
+  .share-copy-btn.copied{background:var(--secondary-container);color:#00514A;}
+
+  /* ---------- Kiosk / demo mode ---------- */
+  #screen-kiosk{background:#0B0B10;align-items:center;justify-content:center;}
+  .kiosk-frame{
+    width:100%;max-width:960px;aspect-ratio:16/9;background:var(--bg);
+    display:flex;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.5);
+    margin:auto;border-radius:8px;
+  }
+  .kiosk-left{
+    width:34%;flex-shrink:0;background:var(--surface);border-right:1px solid var(--outline);
+    display:flex;flex-direction:column;justify-content:center;gap:14px;padding:6% 7%;
+  }
+  .kiosk-brand{font-size:1.1vw;font-weight:600;color:var(--text-tertiary);letter-spacing:.4px;text-transform:uppercase;}
+  .kiosk-clock{font-family:'Roboto Mono',monospace;font-size:4.2vw;font-weight:600;letter-spacing:-1px;line-height:1;}
+  .kiosk-date{font-size:1.3vw;color:var(--text-secondary);}
+  .kiosk-mode-badge{
+    align-self:flex-start;font-size:.95vw;font-weight:600;color:var(--on-primary);background:var(--primary);
+    padding:.4vw 1vw;border-radius:100px;
+  }
+  .kiosk-progress-wrap{margin-top:1vw;}
+  .kiosk-next{font-size:1.1vw;color:var(--text-secondary);margin-top:.4vw;}
+  .kiosk-right{
+    flex:1;min-width:0;display:flex;flex-direction:column;padding:5% 4%;overflow:hidden;
+  }
+  .kiosk-group-head{margin-bottom:1.4vw;}
+  .kiosk-group-name{font-size:2.6vw;font-weight:700;letter-spacing:-.5px;}
+  .kiosk-group-day{font-size:1.2vw;color:var(--text-secondary);margin-top:.2vw;}
+  .kiosk-content{flex:1;overflow-y:auto;padding-right:6px;}
+  .kiosk-content .timeline{transform-origin:top left;}
+
   a{color:inherit;}
 </style>
 </head>
@@ -329,17 +477,39 @@
   <!-- ===== Onboarding: upload ===== -->
   <section class="screen active" id="screen-upload">
     <div class="onboard">
-      <div class="onboard-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 4v5"/><path d="M7.5 14h2M7.5 17h2M11.5 14h2M11.5 17h2M15.5 14h2M15.5 17h2"/></svg>
-      </div>
-      <div>
+      <div class="onboard-top-row">
+        <div class="onboard-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 4v5"/><path d="M7.5 14h2M7.5 17h2M11.5 14h2M11.5 17h2M15.5 14h2M15.5 17h2"/></svg>
+        </div>
         <h1>Расписание</h1>
-        <p>Загрузите файл расписания в формате .xls / .xlsx — точно такой же, каким пользуется учебная часть. Приложение разберёт его само и запомнит на будущее.</p>
       </div>
-      <label class="drop" id="drop-zone" for="file-input">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-        <div class="drop-title">Выбрать файл</div>
-        <div class="drop-sub">или перетащите его сюда</div>
+
+      <div class="quick-continue" id="quick-continue" style="display:none;">
+        <div class="qc-label">Продолжить</div>
+        <button class="qc-btn" id="qc-btn">
+          <span class="qc-group" id="qc-group">—</span>
+          <span class="qc-sub" id="qc-sub">открыть расписание</span>
+        </button>
+      </div>
+
+      <div class="gh-block">
+        <div class="gh-label">Актуальное расписание</div>
+        <div id="gh-latest-wrap">
+          <div class="gh-card gh-loading" id="gh-loading-card">
+            <span class="spinner spinner-dark"></span>
+            <span>Ищу файлы на GitHub…</span>
+          </div>
+        </div>
+      </div>
+
+      <label class="tile-upload" id="drop-zone" for="file-input">
+        <div class="tile-upload-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        </div>
+        <div class="tile-upload-text">
+          <div class="drop-title">Загрузить своё</div>
+          <div class="drop-sub">выбрать файл .xls / .xlsx или перетащить сюда</div>
+        </div>
       </label>
       <input class="file-input" id="file-input" type="file" accept=".xls,.xlsx">
       <div class="err-box" id="upload-error"></div>
@@ -347,6 +517,38 @@
         <span id="btn-parse-spinner" style="display:none;" class="spinner"></span>
         <span id="btn-parse-label">Разобрать файл</span>
       </button>
+
+      <div class="gh-older-wrap" id="gh-older-wrap" style="display:none;">
+        <button class="gh-expand-btn" id="gh-expand-btn">
+          <span id="gh-expand-label">Показать старые версии</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="gh-older-list" id="gh-older-list" style="display:none;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Kiosk / demo mode ===== -->
+  <section class="screen" id="screen-kiosk">
+    <div class="kiosk-frame">
+      <div class="kiosk-left">
+        <div class="kiosk-brand" id="kiosk-brand">Расписание</div>
+        <div class="kiosk-clock" id="kiosk-clock">00:00</div>
+        <div class="kiosk-date" id="kiosk-date">—</div>
+        <div class="kiosk-mode-badge" id="kiosk-mode-badge">Демо-режим</div>
+        <div class="kiosk-progress-wrap">
+          <div class="progress-track"><div class="progress-fill" id="kiosk-progress-fill" style="width:0%"></div></div>
+          <div class="progress-foot"><span id="kiosk-progress-from">—</span><span id="kiosk-progress-to">—</span></div>
+        </div>
+        <div class="kiosk-next" id="kiosk-next">—</div>
+      </div>
+      <div class="kiosk-right">
+        <div class="kiosk-group-head">
+          <div class="kiosk-group-name" id="kiosk-group-name">—</div>
+          <div class="kiosk-group-day" id="kiosk-group-day">—</div>
+        </div>
+        <div class="kiosk-content" id="kiosk-content"></div>
+      </div>
     </div>
   </section>
 
@@ -371,16 +573,10 @@
       <div class="topbar">
         <div class="topbar-left">
           <div class="term-title" id="term-title">—</div>
-          <div class="topbar-group-row">
-            <button class="group-btn" id="group-switch-btn">
-              <span id="current-group">—</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-            </button>
-            <a class="tg-link" href="mailto:a68590260@gmail.com" target="_blank" rel="noopener">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.6 18.6 20.36c-.25 1.1-.9 1.37-1.83.85l-5.06-3.73-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.16 9.4-8.5c.41-.36-.09-.56-.63-.2L6.3 13.1l-5.02-1.57c-1.09-.34-1.11-1.09.23-1.61L20.57 3.6c.91-.34 1.7.2 1.37 1z"/></svg>
-              Questions and errors
-            </a>
-          </div>
+          <button class="group-btn" id="group-switch-btn">
+            <span id="current-group">—</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
         </div>
         <button class="icon-btn" id="settings-btn" aria-label="Настройки">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -416,9 +612,50 @@
     Сменить группу
   </button>
   <button class="sheet-row" id="sheet-reupload">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-4 4M12 4l4 4"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
     Загрузить другой файл
   </button>
+
+  <div class="sheet-toggle-row">
+    <div class="sheet-toggle-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      Тёмная тема
+    </div>
+    <button class="switch" id="theme-switch" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+  </div>
+
+  <div class="sheet-toggle-row">
+    <div class="sheet-toggle-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Демо-режим на экране входа
+    </div>
+    <button class="switch" id="demo-switch" role="switch" aria-checked="false"><span class="switch-knob"></span></button>
+  </div>
+
+  <button class="sheet-row" id="sheet-share">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+    Поделиться
+  </button>
+
+  <button class="sheet-row" id="sheet-contact">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.94 4.6 18.6 20.36c-.25 1.1-.9 1.37-1.83.85l-5.06-3.73-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.16 9.4-8.5c.41-.36-.09-.56-.63-.2L6.3 13.1l-5.02-1.57c-1.09-.34-1.11-1.09.23-1.61L20.57 3.6c.91-.34 1.7.2 1.37 1z"/></svg>
+    Вопросы и ошибки
+  </button>
+</div>
+
+<!-- Share sheet -->
+<div class="scrim" id="share-scrim"></div>
+<div class="sheet" id="share-sheet">
+  <div class="sheet-handle"></div>
+  <div class="share-title">Поделиться приложением</div>
+  <div class="share-qr-wrap">
+    <img id="share-qr-img" alt="QR-код ссылки" width="180" height="180">
+  </div>
+  <div class="share-link-row">
+    <span class="share-link-text" id="share-link-text">patrlza.github.io/schedule-akrilk</span>
+    <button class="share-copy-btn" id="share-copy-btn">Копировать</button>
+  </div>
+  <button class="btn btn-filled btn-block" id="share-native-btn">Поделиться…</button>
 </div>
 
 <script>
@@ -437,40 +674,76 @@
   var WEEKDAY_INDEX = {1:'ПОНЕДЕЛЬНИК',2:'ВТОРНИК',3:'СРЕДА',4:'ЧЕТВЕРГ',5:'ПЯТНИЦА',6:'СУББОТА',0:'ВОСКРЕСЕНЬЕ'};
 
   var STORAGE_KEY = 'schedule-app-state-v1';
+  var PREFS_KEY = 'schedule-app-prefs-v1';
   // Bump this whenever the parsing logic changes — it guards against silently
   // showing a schedule that was parsed by an older, buggier version of this app.
   var PARSER_VERSION = 2;
+  var GITHUB_OWNER = 'PatRlza';
+  var GITHUB_REPO = 'schedule-akrilk';
+  var PAGE_URL = 'https://patrlza.github.io/schedule-akrilk/';
+  var IDLE_DEMO_MS = 10*60*1000;
+
   var state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null, viewMode:'day' };
+  var prefs = { theme:'light', demoEnabled:false };
   var tickTimer=null;
   var BREAK_MIN_GAP = 15;   // minutes — shorter gaps are just passing time between pairs
   var BREAK_MAX_GAP = 150;  // minutes — longer gaps aren't shown as a single "break" tile
   var LUNCH_WINDOW = [630, 930]; // 10:30–15:30, gaps overlapping this get labeled "Обед"
 
   // ---------- persistence ----------
-  function hasStorage(){ return typeof window.storage !== 'undefined' && window.storage; }
+  // Runs standalone on GitHub Pages, so plain localStorage is the real store.
+  // window.storage (Claude Artifacts) is used instead when the app happens to
+  // run inside that environment, so nothing breaks there either.
+  function hasClaudeStorage(){ return typeof window.storage !== 'undefined' && window.storage; }
+
+  async function kvGet(key){
+    if(hasClaudeStorage()){
+      try{ var res = await window.storage.get(key, false); return (res && res.value!=null) ? res.value : null; }catch(e){ return null; }
+    }
+    try{ return window.localStorage.getItem(key); }catch(e){ return null; }
+  }
+  async function kvSet(key, value){
+    if(hasClaudeStorage()){
+      try{ await window.storage.set(key, value, false); return; }catch(e){ return; }
+    }
+    try{ window.localStorage.setItem(key, value); }catch(e){ /* private mode etc. */ }
+  }
+  async function kvDelete(key){
+    if(hasClaudeStorage()){
+      try{ await window.storage.delete(key, false); return; }catch(e){ return; }
+    }
+    try{ window.localStorage.removeItem(key); }catch(e){}
+  }
 
   async function loadStateRaw(){
-    if(!hasStorage()) return null;
-    try{
-      var res = await window.storage.get('app-state', false);
-      if(!res || !res.value) return null;
-      return JSON.parse(res.value);
-    }catch(e){ return null; }
+    var raw = await kvGet(STORAGE_KEY);
+    if(!raw) return null;
+    try{ return JSON.parse(raw); }catch(e){ return null; }
   }
   async function saveState(){
-    if(!hasStorage()) return;
     try{
-      await window.storage.set('app-state', JSON.stringify({
+      await kvSet(STORAGE_KEY, JSON.stringify({
         parsed: state.parsed, selectedGroup: state.selectedGroup,
         savedAt: state.savedAt, fileName: state.fileName, parserVersion: PARSER_VERSION
-      }), false);
+      }));
     }catch(e){ /* best effort */ }
   }
   async function clearState(){
-    if(hasStorage()){
-      try{ await window.storage.delete('app-state', false); }catch(e){}
-    }
+    await kvDelete(STORAGE_KEY);
     state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null };
+  }
+
+  async function loadPrefs(){
+    var raw = await kvGet(PREFS_KEY);
+    if(!raw) return;
+    try{
+      var p = JSON.parse(raw);
+      if(p.theme==='dark' || p.theme==='light') prefs.theme = p.theme;
+      prefs.demoEnabled = !!p.demoEnabled;
+    }catch(e){}
+  }
+  async function savePrefs(){
+    try{ await kvSet(PREFS_KEY, JSON.stringify(prefs)); }catch(e){}
   }
 
   // ---------- parsing ----------
@@ -691,6 +964,8 @@
 
   // ---------- upload screen ----------
   var pendingFile = null;
+  var lastInteractionAt = Date.now();
+  function markInteraction(){ lastInteractionAt = Date.now(); }
 
   function setUploadError(msg, isInfo){
     var box = $('upload-error');
@@ -700,9 +975,29 @@
     box.classList.toggle('info', !!isInfo);
   }
 
+  // Shared by "загрузить своё" and by picking a schedule fetched from GitHub —
+  // both end up with an ArrayBuffer that needs the same parse-and-proceed steps.
+  function loadWorkbookAndProceed(arrayBuffer, sourceLabel){
+    try{
+      var data = new Uint8Array(arrayBuffer);
+      var wb = XLSX.read(data, {type:'array'});
+      var parsed = parseWorkbook(wb);
+      state.parsed = parsed;
+      state.fileName = sourceLabel;
+      state.savedAt = new Date().toISOString();
+      renderGroupPicker();
+      show('screen-pick');
+      return true;
+    }catch(err){
+      setUploadError('Не получилось разобрать файл. Убедитесь, что это тот же файл расписания (.xls/.xlsx), что выдаёт учебная часть, и структура листа не менялась.');
+      return false;
+    }
+  }
+
   function onFileChosen(file){
     pendingFile = file;
     setUploadError('');
+    markInteraction();
     $('drop-zone').querySelector('.drop-title').textContent = file.name;
     $('drop-zone').querySelector('.drop-sub').textContent = 'Файл выбран — нажмите «Разобрать файл»';
     $('btn-parse').style.display = 'inline-flex';
@@ -725,6 +1020,7 @@
 
   $('btn-parse').addEventListener('click', function(){
     if(!pendingFile) return;
+    markInteraction();
     $('btn-parse-spinner').style.display='inline-block';
     $('btn-parse-label').textContent='Разбираем…';
     $('btn-parse').disabled = true;
@@ -736,20 +1032,8 @@
       setUploadError('Не удалось прочитать файл. Попробуйте выбрать его ещё раз.');
     };
     reader.onload = function(ev){
-      try{
-        var data = new Uint8Array(ev.target.result);
-        var wb = XLSX.read(data, {type:'array'});
-        var parsed = parseWorkbook(wb);
-        state.parsed = parsed;
-        state.fileName = pendingFile.name;
-        state.savedAt = new Date().toISOString();
-        renderGroupPicker();
-        show('screen-pick');
-        resetParseButton();
-      }catch(err){
-        resetParseButton();
-        setUploadError('Не получилось разобрать файл. Убедитесь, что это тот же файл расписания (.xls/.xlsx), что выдаёт учебная часть, и структура листа не менялась.');
-      }
+      loadWorkbookAndProceed(ev.target.result, pendingFile.name);
+      resetParseButton();
     };
     reader.readAsArrayBuffer(pendingFile);
   });
@@ -758,6 +1042,129 @@
     $('btn-parse-spinner').style.display='none';
     $('btn-parse-label').textContent='Разобрать файл';
     $('btn-parse').disabled = false;
+  }
+
+  // ---------- schedules published on GitHub next to the app ----------
+  var ghSchedules = [];
+
+  function formatGhDate(iso){
+    try{ return new Date(iso).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'}); }
+    catch(e){ return ''; }
+  }
+
+  function setGhBusy(busy){
+    document.querySelectorAll('.gh-card, .gh-older-item').forEach(function(el){
+      el.style.opacity = busy ? '.5' : '';
+      el.style.pointerEvents = busy ? 'none' : '';
+    });
+  }
+
+  async function useGithubSchedule(f){
+    markInteraction();
+    setUploadError('');
+    setGhBusy(true);
+    try{
+      var res = await fetch(f.url);
+      if(!res.ok) throw new Error('fetch_failed');
+      var buf = await res.arrayBuffer();
+      loadWorkbookAndProceed(buf, f.name);
+    }catch(e){
+      setUploadError('Не удалось загрузить файл с GitHub. Проверьте связь или загрузите файл вручную.');
+    }
+    setGhBusy(false);
+  }
+
+  async function fetchGithubSchedules(){
+    var apiUrl = 'https://api.github.com/repos/'+GITHUB_OWNER+'/'+GITHUB_REPO+'/contents/';
+    var res = await fetch(apiUrl);
+    if(!res.ok) throw new Error('list_failed');
+    var items = await res.json();
+    var files = items.filter(function(it){ return it.type==='file' && /\.(xlsx|xls)$/i.test(it.name); });
+    var withDates = await Promise.all(files.map(async function(f){
+      var date = null;
+      try{
+        var cRes = await fetch('https://api.github.com/repos/'+GITHUB_OWNER+'/'+GITHUB_REPO+'/commits?path='+encodeURIComponent(f.path)+'&per_page=1');
+        if(cRes.ok){
+          var commits = await cRes.json();
+          if(commits && commits[0] && commits[0].commit && commits[0].commit.committer) date = commits[0].commit.committer.date;
+        }
+      }catch(e){}
+      return { name: f.name, url: f.download_url, date: date };
+    }));
+    withDates.sort(function(a,b){
+      var da = a.date? new Date(a.date).getTime():0, db = b.date? new Date(b.date).getTime():0;
+      return db-da;
+    });
+    return withDates;
+  }
+
+  async function initGithubSchedules(){
+    var wrap = $('gh-latest-wrap');
+    try{
+      ghSchedules = await fetchGithubSchedules();
+    }catch(e){
+      wrap.innerHTML = '<div class="gh-error">Не удалось получить список файлов с GitHub. Можно загрузить файл вручную ниже.</div>';
+      return;
+    }
+    if(!ghSchedules.length){
+      wrap.innerHTML = '<div class="gh-error">На GitHub рядом с приложением пока нет файлов расписания.</div>';
+      return;
+    }
+    var latest = ghSchedules[0];
+    wrap.innerHTML = '<button class="gh-card" id="gh-latest-card">'+
+      '<span class="gh-tag">Свежее</span>'+
+      '<span class="gh-name">'+esc(latest.name)+'</span>'+
+      '<span class="gh-meta">'+(latest.date? formatGhDate(latest.date) : 'дата неизвестна')+'</span>'+
+    '</button>';
+    $('gh-latest-card').addEventListener('click', function(){ useGithubSchedule(latest); });
+
+    var older = ghSchedules.slice(1);
+    if(older.length){
+      $('gh-older-wrap').style.display='';
+      $('gh-older-list').innerHTML = older.map(function(f,i){
+        return '<button class="gh-older-item" data-idx="'+i+'">'+
+          '<span class="gh-name">'+esc(f.name)+'</span>'+
+          '<span class="gh-meta">'+(f.date? formatGhDate(f.date):'дата неизвестна')+'</span>'+
+        '</button>';
+      }).join('');
+      $('gh-older-list').querySelectorAll('.gh-older-item').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          useGithubSchedule(older[+btn.getAttribute('data-idx')]);
+        });
+      });
+    }
+  }
+
+  $('gh-expand-btn').addEventListener('click', function(){
+    markInteraction();
+    var list = $('gh-older-list');
+    var willOpen = list.style.display === 'none';
+    list.style.display = willOpen ? 'flex' : 'none';
+    $('gh-expand-btn').classList.toggle('open', willOpen);
+    $('gh-expand-label').textContent = willOpen ? 'Скрыть старые версии' : 'Показать старые версии';
+  });
+
+  // ---------- quick continue (remembered group) ----------
+  function renderQuickContinue(saved){
+    if(saved && saved.parsed && saved.selectedGroup && saved.parsed.byGroup[saved.selectedGroup]){
+      $('qc-group').textContent = saved.selectedGroup;
+      $('qc-sub').textContent = 'открыть расписание';
+      $('quick-continue').style.display='';
+      $('qc-btn').onclick = function(){
+        markInteraction();
+        state.parsed = saved.parsed;
+        state.selectedGroup = saved.selectedGroup;
+        state.savedAt = saved.savedAt;
+        state.fileName = saved.fileName;
+        var today = WEEKDAY_INDEX[new Date().getDay()];
+        state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
+        renderMain();
+        show('screen-main');
+        startTicking();
+      };
+    } else {
+      $('quick-continue').style.display='none';
+    }
   }
 
   // ---------- group picker ----------
@@ -811,6 +1218,7 @@
   });
 
   async function selectGroup(g){
+    markInteraction();
     state.selectedGroup = g;
     var today = WEEKDAY_INDEX[new Date().getDay()];
     state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
@@ -1070,6 +1478,15 @@
   });
 
   // ---------- settings sheet ----------
+  function openGenericSheet(sheetId, scrimId){
+    $(scrimId).classList.add('show');
+    $(sheetId).classList.add('show');
+  }
+  function closeGenericSheet(sheetId, scrimId){
+    $(scrimId).classList.remove('show');
+    $(sheetId).classList.remove('show');
+  }
+
   function openSheet(){
     var info = 'Файл: '+(state.fileName||'—');
     if(state.savedAt){
@@ -1079,13 +1496,10 @@
       }catch(e){}
     }
     $('sheet-info').textContent = info;
-    $('scrim').classList.add('show');
-    $('settings-sheet').classList.add('show');
+    openGenericSheet('settings-sheet','scrim');
   }
-  function closeSheet(){
-    $('scrim').classList.remove('show');
-    $('settings-sheet').classList.remove('show');
-  }
+  function closeSheet(){ closeGenericSheet('settings-sheet','scrim'); }
+
   $('settings-btn').addEventListener('click', openSheet);
   $('group-switch-btn').addEventListener('click', function(){
     renderGroupPicker();
@@ -1101,34 +1515,176 @@
     closeSheet();
     await clearState();
     pendingFile = null;
-    $('drop-zone').querySelector('.drop-title').textContent = 'Выбрать файл';
-    $('drop-zone').querySelector('.drop-sub').textContent = 'или перетащите его сюда';
+    $('drop-zone').querySelector('.drop-title').textContent = 'Загрузить своё';
+    $('drop-zone').querySelector('.drop-sub').textContent = 'выбрать файл .xls / .xlsx или перетащить сюда';
     $('btn-parse').style.display='none';
     $('file-input').value='';
     setUploadError('');
+    renderQuickContinue(null);
     show('screen-upload');
+  });
+
+  // ---------- theme ----------
+  function applyTheme(){
+    document.documentElement.setAttribute('data-theme', prefs.theme==='dark' ? 'dark' : 'light');
+    $('theme-switch').setAttribute('aria-checked', prefs.theme==='dark' ? 'true':'false');
+  }
+  $('theme-switch').addEventListener('click', function(){
+    prefs.theme = prefs.theme==='dark' ? 'light' : 'dark';
+    applyTheme();
+    savePrefs();
+  });
+
+  // ---------- demo mode toggle ----------
+  function applyDemoSwitch(){
+    $('demo-switch').setAttribute('aria-checked', prefs.demoEnabled ? 'true':'false');
+  }
+  $('demo-switch').addEventListener('click', function(){
+    prefs.demoEnabled = !prefs.demoEnabled;
+    applyDemoSwitch();
+    savePrefs();
+    markInteraction();
+  });
+
+  // ---------- share sheet ----------
+  function openShareSheet(){
+    closeSheet();
+    $('share-qr-img').src = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&data='+encodeURIComponent(PAGE_URL);
+    $('share-link-text').textContent = PAGE_URL.replace(/^https?:\/\//,'').replace(/\/$/,'');
+    openGenericSheet('share-sheet','share-scrim');
+  }
+  $('sheet-share').addEventListener('click', openShareSheet);
+  $('share-scrim').addEventListener('click', function(){ closeGenericSheet('share-sheet','share-scrim'); });
+  $('share-copy-btn').addEventListener('click', function(){
+    var btn = $('share-copy-btn');
+    var done = function(){ btn.textContent='Скопировано'; btn.classList.add('copied'); setTimeout(function(){ btn.textContent='Копировать'; btn.classList.remove('copied'); }, 1800); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(PAGE_URL).then(done).catch(done);
+    } else { done(); }
+  });
+  $('share-native-btn').addEventListener('click', function(){
+    if(navigator.share){
+      navigator.share({ title:'Расписание', url: PAGE_URL }).catch(function(){});
+    } else {
+      $('share-copy-btn').click();
+    }
+  });
+
+  $('sheet-contact').addEventListener('click', function(){
+    window.location.href = 'mailto:a68590260@gmail.com';
+  });
+
+  // ---------- kiosk / demo mode ----------
+  var kioskState = { active:false, groups:[], idx:0, rotateTimer:null, clockTimer:null };
+
+  function findCurrentLessonGroups(parsed){
+    var today = WEEKDAY_INDEX[new Date().getDay()];
+    var nm = nowMinutes();
+    var out = [];
+    parsed.groups.forEach(function(g){
+      var lessons = (parsed.byGroup[g] && parsed.byGroup[g][today]) || [];
+      var hit = lessons.some(function(l){ return l.startMin!=null && nm>=l.startMin && nm<l.endMin; });
+      if(hit) out.push(g);
+    });
+    return out;
+  }
+
+  function stopKiosk(){
+    kioskState.active = false;
+    if(kioskState.rotateTimer){ clearInterval(kioskState.rotateTimer); kioskState.rotateTimer=null; }
+    if(kioskState.clockTimer){ clearInterval(kioskState.clockTimer); kioskState.clockTimer=null; }
+  }
+
+  function exitKiosk(){
+    stopKiosk();
+    markInteraction();
+    show('screen-upload');
+  }
+
+  function renderKioskGroup(){
+    var parsed = state.parsed;
+    var g = kioskState.groups[kioskState.idx];
+    if(!g) return;
+    var today = WEEKDAY_INDEX[new Date().getDay()];
+    var lessons = (parsed.byGroup[g] && parsed.byGroup[g][today]) || [];
+    $('kiosk-group-name').textContent = g;
+    $('kiosk-group-day').textContent = DAY_TITLE[today]||today;
+    $('kiosk-content').innerHTML = timelineHtml(lessons, true);
+    var prog = computeDayProgress(lessons);
+    $('kiosk-progress-fill').style.width = prog.pct+'%';
+    $('kiosk-progress-from').textContent = prog.dayStart!=null? minToLabel(prog.dayStart):'—';
+    $('kiosk-progress-to').textContent = prog.dayEnd!=null? minToLabel(prog.dayEnd):'—';
+    $('kiosk-next').textContent = prog.statusLabel;
+  }
+
+  function tickKioskClock(){
+    $('kiosk-clock').textContent = fmtClock();
+    var d = new Date();
+    $('kiosk-date').textContent = d.toLocaleDateString('ru-RU',{weekday:'long', day:'numeric', month:'long'});
+    if(kioskState.active) renderKioskGroup();
+  }
+
+  async function enterKiosk(){
+    if(!state.parsed){
+      try{
+        if(!ghSchedules.length) ghSchedules = await fetchGithubSchedules();
+        if(!ghSchedules.length) return;
+        var res = await fetch(ghSchedules[0].url);
+        if(!res.ok) return;
+        var buf = await res.arrayBuffer();
+        var wb = XLSX.read(new Uint8Array(buf), {type:'array'});
+        state.parsed = parseWorkbook(wb);
+        state.fileName = ghSchedules[0].name;
+      }catch(e){ return; }
+    }
+    var candidates = findCurrentLessonGroups(state.parsed);
+    if(!candidates.length) return; // nobody has a lesson right now — stay on the login screen
+
+    kioskState.active = true;
+    kioskState.groups = candidates;
+    kioskState.idx = 0;
+    show('screen-kiosk');
+    tickKioskClock();
+    kioskState.clockTimer = setInterval(tickKioskClock, 20000);
+    kioskState.rotateTimer = setInterval(function(){
+      var fresh = findCurrentLessonGroups(state.parsed);
+      kioskState.groups = fresh.length ? fresh : kioskState.groups;
+      kioskState.idx = (kioskState.idx+1) % kioskState.groups.length;
+      renderKioskGroup();
+    }, 10*60*1000);
+  }
+
+  ['pointerdown','keydown'].forEach(function(ev){
+    $('screen-kiosk').addEventListener(ev, exitKiosk);
+  });
+
+  // idle watcher — only fires while sitting on the login screen with demo mode on
+  setInterval(function(){
+    if(!prefs.demoEnabled) return;
+    if(!$('screen-upload').classList.contains('active')) return;
+    if(Date.now() - lastInteractionAt < IDLE_DEMO_MS) return;
+    enterKiosk();
+  }, 15000);
+  document.addEventListener('pointerdown', function(e){
+    if($('screen-upload').classList.contains('active')) markInteraction();
   });
 
   // ---------- boot ----------
   (async function init(){
+    await loadPrefs();
+    applyTheme();
+    applyDemoSwitch();
+
     var saved = await loadStateRaw();
     var isStale = saved && saved.parserVersion !== PARSER_VERSION;
-    if(saved && !isStale && saved.parsed && saved.selectedGroup && saved.parsed.byGroup[saved.selectedGroup]){
-      state.parsed = saved.parsed;
-      state.selectedGroup = saved.selectedGroup;
-      state.savedAt = saved.savedAt;
-      state.fileName = saved.fileName;
-      var today = WEEKDAY_INDEX[new Date().getDay()];
-      state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
-      renderMain();
-      show('screen-main');
-      startTicking();
-    } else {
-      if(isStale){
-        setUploadError('Разбор расписания был улучшен — загрузите файл ещё раз, чтобы обновить данные.', true);
-      }
-      show('screen-upload');
+    var validSaved = (saved && !isStale && saved.parsed && saved.selectedGroup && saved.parsed.byGroup[saved.selectedGroup]) ? saved : null;
+
+    if(isStale){
+      setUploadError('Разбор расписания был улучшен — загрузите файл ещё раз, чтобы обновить данные.', true);
     }
+    renderQuickContinue(validSaved);
+    show('screen-upload');
+    initGithubSchedules();
   })();
 
 })();

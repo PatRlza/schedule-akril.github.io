@@ -288,10 +288,11 @@
   .week-badge{
     display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
     background:var(--surface);border-radius:100px;box-shadow:var(--shadow);
-    padding:4px 14px;line-height:1.15;flex-shrink:0;
+    padding:4px 18px;line-height:1.15;flex-shrink:0;min-width:74px;
   }
-  .week-badge .wb-num{font-size:12.5px;font-weight:700;color:var(--text);}
-  .week-badge .wb-parity{font-size:9.5px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.2px;}
+  .week-badge .wb-num{font-size:14px;font-weight:700;color:var(--text);}
+  .week-badge .wb-word{font-size:9.5px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.2px;}
+  .week-badge .wb-parity{font-size:9.5px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.2px;margin-top:1px;}
   .week-badge.is-even .wb-parity{color:var(--secondary);}
   .week-badge.is-odd .wb-parity{color:var(--primary);}
 
@@ -378,12 +379,18 @@
   .status-current{background:var(--secondary-container);color:var(--on-secondary-container);}
   .status-upcoming{background:var(--primary-container);color:var(--on-primary-container);}
   .status-done{background:transparent;color:var(--text-tertiary);}
+  .status-ghost{background:transparent;color:var(--text-tertiary);font-style:italic;}
 
   .lesson.is-done .lesson-card{background:var(--surface-container);box-shadow:none;}
   .lesson.is-done .lesson-subject{color:var(--text-secondary);}
   .lesson.is-done .lesson-dot{background:var(--done);}
   .lesson.is-current .lesson-card{outline:2px solid var(--secondary);outline-offset:-2px;}
   .lesson.is-current .lesson-dot{background:var(--secondary);box-shadow:0 0 0 4px var(--secondary-container);}
+
+  .lesson.is-ghost .lesson-card{background:transparent;box-shadow:none;border:1.5px dashed var(--outline);opacity:.6;}
+  .lesson.is-ghost .lesson-subject{color:var(--text-tertiary);}
+  .lesson.is-ghost .lesson-meta{color:var(--text-tertiary);}
+  .lesson.is-ghost .lesson-dot{background:var(--surface);border:2px solid var(--outline);}
 
   .lesson.is-break .lesson-card{
     background:transparent;box-shadow:none;border:1.5px dashed var(--outline);padding:10px 16px;
@@ -454,40 +461,41 @@
   .share-copy-btn.copied{background:var(--secondary-container);color:var(--on-secondary-container);}
 
   /* ---------- Kiosk / demo mode ---------- */
-  #screen-kiosk{background:#0B0B10;align-items:center;justify-content:center;}
-  .kiosk-frame{
-    width:100%;max-width:960px;aspect-ratio:16/9;background:var(--bg);
-    display:flex;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.5);
-    margin:auto;border-radius:8px;position:relative;
+  #screen-kiosk{background:var(--bg);}
+  .kiosk-layout{display:flex;width:100%;min-height:100vh;}
+  .kiosk-main{
+    flex:1;min-width:0;overflow-y:auto;
+    padding:calc(20px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom)) 24px;
   }
+  .kiosk-daytitle{font-size:15px;font-weight:600;color:var(--text-secondary);margin-bottom:12px;}
+  .kiosk-side{
+    width:220px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--outline);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px 16px;position:relative;text-align:center;
+  }
+  .kiosk-side-inner{display:flex;flex-direction:column;align-items:center;gap:6px;}
   .kiosk-exit-btn{
-    position:absolute;top:12px;right:12px;z-index:5;width:32px;height:32px;border-radius:50%;
-    border:none;background:rgba(0,0,0,.35);color:#fff;display:flex;align-items:center;justify-content:center;
-    opacity:.55;transition:opacity .15s ease;
+    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
+    border:none;background:var(--surface-container);color:var(--text-secondary);
+    display:flex;align-items:center;justify-content:center;
   }
-  .kiosk-exit-btn:hover,.kiosk-exit-btn:active{opacity:1;}
-  .kiosk-exit-btn svg{width:16px;height:16px;}
-  .kiosk-left{
-    width:34%;flex-shrink:0;background:var(--surface);border-right:1px solid var(--outline);
-    display:flex;flex-direction:column;justify-content:center;gap:14px;padding:6% 7%;
-  }
-  .kiosk-brand{font-size:1.1vw;font-weight:600;color:var(--text-tertiary);letter-spacing:.4px;text-transform:uppercase;}
-  .kiosk-clock{font-family:'Roboto Mono',monospace;font-size:4.2vw;font-weight:600;letter-spacing:-1px;line-height:1;}
-  .kiosk-date{font-size:1.3vw;color:var(--text-secondary);}
+  .kiosk-exit-btn:active{background:var(--surface-container-high);}
+  .kiosk-exit-btn svg{width:15px;height:15px;}
   .kiosk-mode-badge{
-    align-self:flex-start;font-size:.95vw;font-weight:600;color:var(--on-primary);background:var(--primary);
-    padding:.4vw 1vw;border-radius:100px;
+    font-size:11px;font-weight:600;color:var(--on-primary);background:var(--primary);
+    padding:4px 12px;border-radius:100px;margin-bottom:10px;
   }
-  .kiosk-progress-wrap{margin-top:1vw;}
-  .kiosk-next{font-size:1.1vw;color:var(--text-secondary);margin-top:.4vw;}
-  .kiosk-right{
-    flex:1;min-width:0;display:flex;flex-direction:column;padding:5% 4%;overflow:hidden;
+  .kiosk-side-label{font-size:11.5px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.3px;}
+  .kiosk-group-name{font-size:24px;font-weight:800;letter-spacing:-.3px;line-height:1.15;word-break:break-word;}
+  .kiosk-group-day{font-size:13px;color:var(--text-secondary);}
+
+  @media (max-width: 640px){
+    .kiosk-layout{flex-direction:column-reverse;}
+    .kiosk-side{width:100%;flex-direction:row;justify-content:center;gap:10px;padding:14px 16px;border-left:none;border-top:1px solid var(--outline);}
+    .kiosk-side-inner{flex-direction:row;gap:10px;align-items:baseline;}
+    .kiosk-mode-badge, .kiosk-side-label{margin-bottom:0;}
+    .kiosk-exit-btn{top:10px;right:10px;}
   }
-  .kiosk-group-head{margin-bottom:1.4vw;}
-  .kiosk-group-name{font-size:2.6vw;font-weight:700;letter-spacing:-.5px;}
-  .kiosk-group-day{font-size:1.2vw;color:var(--text-secondary);margin-top:.2vw;}
-  .kiosk-content{flex:1;overflow-y:auto;padding-right:6px;}
-  .kiosk-content .timeline{transform-origin:top left;}
 
   a{color:inherit;}
 </style>
@@ -551,27 +559,26 @@
 
   <!-- ===== Kiosk / demo mode ===== -->
   <section class="screen" id="screen-kiosk">
-    <div class="kiosk-frame">
-      <button class="kiosk-exit-btn" id="kiosk-exit-btn" aria-label="Выйти из демо-режима">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-      <div class="kiosk-left">
-        <div class="kiosk-brand" id="kiosk-brand">Расписание</div>
-        <div class="kiosk-clock" id="kiosk-clock">00:00</div>
-        <div class="kiosk-date" id="kiosk-date">—</div>
-        <div class="kiosk-mode-badge" id="kiosk-mode-badge">Демо-режим</div>
-        <div class="kiosk-progress-wrap">
+    <div class="kiosk-layout">
+      <div class="kiosk-main">
+        <div class="kiosk-daytitle" id="kiosk-daytitle">—</div>
+        <div class="progress-card">
+          <div class="progress-top"><div class="now" id="kiosk-clock">00:00</div><div class="label" id="kiosk-next">—</div></div>
           <div class="progress-track"><div class="progress-fill" id="kiosk-progress-fill" style="width:0%"></div></div>
           <div class="progress-foot"><span id="kiosk-progress-from">—</span><span id="kiosk-progress-to">—</span></div>
         </div>
-        <div class="kiosk-next" id="kiosk-next">—</div>
+        <div id="kiosk-content"></div>
       </div>
-      <div class="kiosk-right">
-        <div class="kiosk-group-head">
+      <div class="kiosk-side">
+        <button class="kiosk-exit-btn" id="kiosk-exit-btn" aria-label="Выйти из демо-режима">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="kiosk-side-inner">
+          <div class="kiosk-mode-badge">Демо-режим</div>
+          <div class="kiosk-side-label">Сейчас идёт</div>
           <div class="kiosk-group-name" id="kiosk-group-name">—</div>
           <div class="kiosk-group-day" id="kiosk-group-day">—</div>
         </div>
-        <div class="kiosk-content" id="kiosk-content"></div>
       </div>
     </div>
   </section>
@@ -618,8 +625,9 @@
             Неделя
           </button>
         </div>
-        <div class="week-badge" id="week-badge" title="Определяет, какие пары показывать в ячейках с двумя вариантами">
+        <div class="week-badge" id="week-badge" title="Пары другой недели показаны серым">
           <span class="wb-num" id="wb-num">—</span>
+          <span class="wb-word">неделя</span>
           <span class="wb-parity" id="wb-parity">—</span>
         </div>
       </div>
@@ -717,11 +725,16 @@
     var num = getISOWeekNumber(new Date());
     return { num: num, parity: (num%2===0) ? 'even' : 'odd' };
   }
-  // Keep only lessons that actually happen this week: entries with no parity tag
-  // run every week; tagged ones only show up on their matching even/odd week.
-  function filterByParity(lessons){
+  // Every lesson keeps its place on the timeline regardless of week parity — one
+  // that belongs to the other parity just gets flagged as a "ghost" so it can be
+  // rendered greyed out instead of disappearing. Progress/gap math below only
+  // ever looks at the non-ghost ones.
+  function annotateParity(lessons){
     var parity = getCurrentWeekInfo().parity;
-    return lessons.filter(function(l){ return !l.parity || l.parity===parity; });
+    return lessons.map(function(l){
+      var isGhost = !!(l.parity && l.parity!==parity);
+      return Object.assign({}, l, {isGhost: isGhost});
+    });
   }
 
   var STORAGE_KEY = 'schedule-app-state-v1';
@@ -738,7 +751,7 @@
   var prefs = { theme:'light', demoEnabled:false };
   var tickTimer=null;
   var BREAK_MIN_GAP = 15;   // minutes — shorter gaps are just passing time between pairs
-  var BREAK_MAX_GAP = 150;  // minutes — longer gaps aren't shown as a single "break" tile
+  var BREAK_MAX_GAP = 100000; // effectively no cap — any free stretch gets its own tile now
   var LUNCH_WINDOW = [630, 930]; // 10:30–15:30, gaps overlapping this get labeled "Обед"
 
   // ---------- persistence ----------
@@ -1249,7 +1262,7 @@
     var byDay = state.parsed.byGroup[g];
     if(!byDay) return 0;
     var n = 0;
-    Object.keys(byDay).forEach(function(d){ n += filterByParity(byDay[d]).length; });
+    Object.keys(byDay).forEach(function(d){ n += annotateParity(byDay[d]).filter(function(l){return !l.isGhost;}).length; });
     return n;
   }
   function pluralPairs(n){
@@ -1321,15 +1334,18 @@
   // Insert an automatic "Обед"/"Перерыв" tile into gaps between timed lessons —
   // the source file never lists lunch itself, only the lessons around it.
   function buildTimelineItems(lessons){
-    var timed = lessons.filter(function(l){ return l.startMin!=null; })
+    var real = lessons.filter(function(l){ return !l.isGhost; });
+    var ghosts = lessons.filter(function(l){ return l.isGhost; });
+
+    var timed = real.filter(function(l){ return l.startMin!=null; })
       .slice().sort(function(a,b){ return a.startMin-b.startMin; });
-    var untimed = lessons.filter(function(l){ return l.startMin==null; });
+    var untimed = real.filter(function(l){ return l.startMin==null; });
     var items = [];
     for(var i=0;i<timed.length;i++){
       items.push({type:'lesson', l:timed[i]});
       if(i<timed.length-1){
         var gap = timed[i+1].startMin - timed[i].endMin;
-        if(gap>=BREAK_MIN_GAP && gap<=BREAK_MAX_GAP){
+        if(gap>=BREAK_MIN_GAP){
           var mid = (timed[i].endMin+timed[i+1].startMin)/2;
           var isLunch = mid>=LUNCH_WINDOW[0] && mid<=LUNCH_WINDOW[1];
           items.push({
@@ -1341,6 +1357,20 @@
       }
     }
     untimed.forEach(function(l){ items.push({type:'lesson', l:l}); });
+
+    // Ghost lessons (other week's parity) still get slotted in at their real time
+    // so the timeline reads naturally — they're just rendered greyed out.
+    function itemStartMin(item){ return item.type==='break' ? item.startMin : item.l.startMin; }
+    ghosts.forEach(function(g){
+      if(g.startMin==null){ items.push({type:'lesson', l:g}); return; }
+      var insertAt = items.length;
+      for(var k=0;k<items.length;k++){
+        var sm = itemStartMin(items[k]);
+        if(sm!=null && sm>g.startMin){ insertAt=k; break; }
+      }
+      items.splice(insertAt, 0, {type:'lesson', l:g});
+    });
+
     return items;
   }
 
@@ -1354,7 +1384,8 @@
   }
 
   function computeDayProgress(lessons, relation){
-    var timed = lessons.filter(function(l){ return l.startMin!=null; });
+    var real = lessons.filter(function(l){ return !l.isGhost; });
+    var timed = real.filter(function(l){ return l.startMin!=null; });
     var dayStart = timed.length? Math.min.apply(null, timed.map(function(l){return l.startMin;})) : null;
     var dayEnd = timed.length? Math.max.apply(null, timed.map(function(l){return l.endMin;})) : null;
     if(relation==='past'){
@@ -1414,20 +1445,24 @@
       }
       var l = item.l;
       var status = 'plain';
-      if(relation==='past' && l.startMin!=null) status='done';
+      var lchip='';
+      if(l.isGhost){
+        status = 'ghost';
+      } else if(relation==='past' && l.startMin!=null) status='done';
       else if(relation==='today' && l.startMin!=null){
         var nm2 = nowMinutes();
         if(nm2 < l.startMin) status='upcoming';
         else if(nm2 < l.endMin) status='current';
         else status='done';
       }
-      var lchip='';
       if(status==='current'){
         lchip = '<span class="status-chip status-current">Сейчас · осталось '+fmtDuration(l.endMin-nowMinutes())+'</span>';
       } else if(status==='upcoming'){
         lchip = '<span class="status-chip status-upcoming">через '+fmtDuration(l.startMin-nowMinutes())+'</span>';
       } else if(status==='done'){
         lchip = '<span class="status-chip status-done">Пройдено</span>';
+      } else if(status==='ghost'){
+        lchip = '<span class="status-chip status-ghost">'+(l.parity==='even'?'на чётной неделе':'на нечётной неделе')+'</span>';
       }
       var metaParts = [];
       if(l.teacher) metaParts.push(esc(l.teacher));
@@ -1435,6 +1470,7 @@
       var lineCls2 = 'lesson';
       if(status==='done') lineCls2+=' is-done';
       if(status==='current') lineCls2+=' is-current';
+      if(status==='ghost') lineCls2+=' is-ghost';
       html += '<li class="'+lineCls2+'" style="animation-delay:'+(idx*35)+'ms">'+
         '<div class="lesson-time">'+
           (l.startLabel? '<div>'+esc(l.startLabel)+'</div>':'<div>'+esc(l.time)+'</div>')+
@@ -1465,7 +1501,7 @@
     var box = $('content');
     var day = state.viewedDay;
     var relation = getDayRelation(day);
-    var lessons = filterByParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][day]) || []);
+    var lessons = annotateParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][day]) || []);
 
     if(lessons.length===0){ box.innerHTML = emptyStateHtml(day); return; }
 
@@ -1486,7 +1522,7 @@
     var box = $('content');
     var html = '';
     state.parsed.dayOrder.forEach(function(d){
-      var lessons = filterByParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][d]) || []);
+      var lessons = annotateParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][d]) || []);
       var relation = getDayRelation(d);
       html += '<div class="week-day-block">';
       html += '<div class="week-day-head"><span>'+(DAY_TITLE[d]||d)+'</span>'+(relation==='today'?'<span class="week-today-badge">Сегодня</span>':(relation==='past'?'<span class="week-today-badge week-past-badge">Завершён</span>':''))+'</div>';
@@ -1517,7 +1553,7 @@
 
   function renderWeekBadge(){
     var info = getCurrentWeekInfo();
-    $('wb-num').textContent = 'Нед. '+info.num;
+    $('wb-num').textContent = info.num;
     $('wb-parity').textContent = info.parity==='even' ? 'чётная' : 'нечётная';
     var badge = $('week-badge');
     badge.classList.toggle('is-even', info.parity==='even');
@@ -1667,7 +1703,7 @@
     var nm = nowMinutes();
     var out = [];
     parsed.groups.forEach(function(g){
-      var lessons = filterByParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []);
+      var lessons = annotateParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []).filter(function(l){ return !l.isGhost; });
       var hit = lessons.some(function(l){ return l.startMin!=null && nm>=l.startMin && nm<l.endMin; });
       if(hit) out.push(g);
     });
@@ -1691,7 +1727,7 @@
     var g = kioskState.groups[kioskState.idx];
     if(!g) return;
     var today = WEEKDAY_INDEX[new Date().getDay()];
-    var lessons = filterByParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []);
+    var lessons = annotateParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []);
     $('kiosk-group-name').textContent = g;
     $('kiosk-group-day').textContent = DAY_TITLE[today]||today;
     $('kiosk-content').innerHTML = timelineHtml(lessons, 'today');
@@ -1705,7 +1741,7 @@
   function tickKioskClock(){
     $('kiosk-clock').textContent = fmtClock();
     var d = new Date();
-    $('kiosk-date').textContent = d.toLocaleDateString('ru-RU',{weekday:'long', day:'numeric', month:'long'});
+    $('kiosk-daytitle').textContent = d.toLocaleDateString('ru-RU',{weekday:'long', day:'numeric', month:'long'});
     if(kioskState.active) renderKioskGroup();
   }
 

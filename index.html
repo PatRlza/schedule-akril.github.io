@@ -30,6 +30,7 @@
     --radius-sm:10px;
     --shadow:0 1px 2px rgba(20,17,90,.06), 0 4px 16px rgba(20,17,90,.06);
   }
+  :root{ --on-secondary-container:#00514A; }
   html[data-theme="dark"]{
     --primary:#B4B2FF;
     --on-primary:#211F6B;
@@ -37,6 +38,7 @@
     --on-primary-container:#E2E0FF;
     --secondary:#5FDCC9;
     --secondary-container:#00504A;
+    --on-secondary-container:#BAF4E8;
     --bg:#131218;
     --surface:#1C1B23;
     --surface-container:#26242E;
@@ -76,9 +78,9 @@
 
   /* ---------- Onboarding ---------- */
   .onboard{
-    flex:1;display:flex;flex-direction:column;justify-content:flex-start;
+    flex:1;display:flex;flex-direction:column;justify-content:center;
     padding:calc(24px + env(safe-area-inset-top)) 20px calc(28px + env(safe-area-inset-bottom));
-    gap:16px;overflow-y:auto;
+    gap:16px;overflow-y:auto;margin:auto 0;
   }
   .onboard-top-row{display:flex;align-items:center;gap:12px;margin-bottom:2px;}
   .onboard-mark{
@@ -87,7 +89,7 @@
     box-shadow:var(--shadow);
   }
   .onboard-mark svg{width:22px;height:22px;}
-  .onboard h1{font-size:22px;line-height:1.2;font-weight:700;margin:0;letter-spacing:-.2px;}
+  .onboard h1{font-size:22px;line-height:1.2;font-weight:700;margin:0;letter-spacing:-.2px;color:var(--text);}
 
   .quick-continue{
     background:var(--primary);border-radius:var(--radius-lg);padding:14px 16px;
@@ -113,7 +115,7 @@
   .gh-card:active{background:var(--surface-container);}
   .gh-loading{flex-direction:row;align-items:center;gap:10px;color:var(--text-secondary);font-size:13.5px;}
   .spinner-dark{border-color:rgba(75,74,219,.2);border-top-color:var(--primary);}
-  .gh-card .gh-name{font-size:16px;font-weight:700;}
+  .gh-card .gh-name{font-size:16px;font-weight:700;color:var(--text);}
   .gh-card .gh-meta{font-size:12.5px;color:var(--text-tertiary);}
   .gh-card .gh-tag{
     display:inline-flex;align-self:flex-start;font-size:10.5px;font-weight:700;letter-spacing:.3px;
@@ -198,7 +200,7 @@
     background:var(--surface);
     border-bottom:1px solid var(--outline);
   }
-  .picker-top h2{margin:2px 0 4px;font-size:20px;font-weight:600;}
+  .picker-top h2{margin:2px 0 4px;font-size:20px;font-weight:600;color:var(--text);}
   .picker-top p{margin:0 0 14px;font-size:13.5px;color:var(--text-secondary);}
   .search{
     display:flex;align-items:center;gap:8px;
@@ -228,7 +230,7 @@
   }
   .group-item:active{transform:scale(.96);background:var(--surface-container);}
   .group-item.selected{border-color:var(--primary);background:var(--primary-container);}
-  .group-item .g-name{font-size:16.5px;font-weight:700;letter-spacing:-.1px;}
+  .group-item .g-name{font-size:16.5px;font-weight:700;letter-spacing:-.1px;color:var(--text);}
   .group-item .g-hint{font-size:11px;color:var(--text-tertiary);}
   .group-item.selected .g-hint{color:var(--on-primary-container);opacity:.7;}
   .empty-note{grid-column:1/-1;padding:30px 20px;text-align:center;color:var(--text-tertiary);font-size:14px;}
@@ -270,8 +272,9 @@
   .icon-btn svg{width:20px;height:20px;color:var(--text);}
   .icon-btn:active{background:var(--surface-container-high);}
 
+  .toggles-row{display:flex;align-items:center;gap:8px;}
   .view-toggle{
-    display:inline-flex;align-self:flex-start;background:var(--surface);border-radius:100px;
+    display:inline-flex;background:var(--surface);border-radius:100px;
     box-shadow:var(--shadow);padding:3px;gap:3px;
   }
   .vt-btn{
@@ -281,6 +284,16 @@
   }
   .vt-btn svg{width:14px;height:14px;flex-shrink:0;}
   .vt-btn.active{background:var(--primary);color:var(--on-primary);}
+
+  .week-badge{
+    display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    background:var(--surface);border-radius:100px;box-shadow:var(--shadow);
+    padding:4px 14px;line-height:1.15;flex-shrink:0;
+  }
+  .week-badge .wb-num{font-size:12.5px;font-weight:700;color:var(--text);}
+  .week-badge .wb-parity{font-size:9.5px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.2px;}
+  .week-badge.is-even .wb-parity{color:var(--secondary);}
+  .week-badge.is-odd .wb-parity{color:var(--primary);}
 
   .day-tabs{
     display:flex;gap:6px;padding:10px;overflow-x:auto;
@@ -309,6 +322,7 @@
     font-size:10.5px;font-weight:600;color:var(--on-primary);background:var(--primary);
     padding:2px 9px;border-radius:100px;
   }
+  .week-past-badge{color:var(--text-tertiary);background:var(--surface-container-high);}
   .week-empty{padding:6px 4px 4px;font-size:13px;color:var(--text-tertiary);}
   .week-progress{height:5px;border-radius:100px;background:var(--surface-container-high);overflow:hidden;margin:0 4px 12px;}
   .week-progress-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--primary),var(--secondary));}
@@ -351,7 +365,7 @@
     box-shadow:var(--shadow);min-width:0;
   }
   .lesson-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px;}
-  .lesson-subject{font-size:15px;font-weight:600;line-height:1.35;}
+  .lesson-subject{font-size:15px;font-weight:600;line-height:1.35;min-width:0;overflow-wrap:break-word;}
   .lesson-meta{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-top:2px;}
   .lesson-note{
     display:inline-block;margin-top:6px;font-size:11.5px;font-weight:500;color:var(--primary);
@@ -361,7 +375,7 @@
     flex-shrink:0;font-size:11px;font-weight:600;padding:4px 9px;border-radius:100px;
     white-space:nowrap;
   }
-  .status-current{background:var(--secondary-container);color:#00514A;}
+  .status-current{background:var(--secondary-container);color:var(--on-secondary-container);}
   .status-upcoming{background:var(--primary-container);color:var(--on-primary-container);}
   .status-done{background:transparent;color:var(--text-tertiary);}
 
@@ -379,7 +393,7 @@
   .lesson.is-break .lesson-dot{background:var(--surface);border:2px solid var(--outline);}
   .lesson.is-break.is-done .lesson-card{border-color:var(--outline);opacity:.6;}
   .lesson.is-break.is-current .lesson-card{border:1.5px dashed var(--secondary);background:var(--secondary-container);opacity:1;}
-  .lesson.is-break.is-current .lesson-subject{color:#00514A;}
+  .lesson.is-break.is-current .lesson-subject{color:var(--on-secondary-container);}
 
   /* ---------- Bottom sheet ---------- */
   .scrim{
@@ -437,15 +451,22 @@
     border:none;background:var(--surface-container-high);color:var(--text);font-size:12.5px;font-weight:500;
     padding:8px 12px;border-radius:100px;flex-shrink:0;
   }
-  .share-copy-btn.copied{background:var(--secondary-container);color:#00514A;}
+  .share-copy-btn.copied{background:var(--secondary-container);color:var(--on-secondary-container);}
 
   /* ---------- Kiosk / demo mode ---------- */
   #screen-kiosk{background:#0B0B10;align-items:center;justify-content:center;}
   .kiosk-frame{
     width:100%;max-width:960px;aspect-ratio:16/9;background:var(--bg);
     display:flex;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,.5);
-    margin:auto;border-radius:8px;
+    margin:auto;border-radius:8px;position:relative;
   }
+  .kiosk-exit-btn{
+    position:absolute;top:12px;right:12px;z-index:5;width:32px;height:32px;border-radius:50%;
+    border:none;background:rgba(0,0,0,.35);color:#fff;display:flex;align-items:center;justify-content:center;
+    opacity:.55;transition:opacity .15s ease;
+  }
+  .kiosk-exit-btn:hover,.kiosk-exit-btn:active{opacity:1;}
+  .kiosk-exit-btn svg{width:16px;height:16px;}
   .kiosk-left{
     width:34%;flex-shrink:0;background:var(--surface);border-right:1px solid var(--outline);
     display:flex;flex-direction:column;justify-content:center;gap:14px;padding:6% 7%;
@@ -531,6 +552,9 @@
   <!-- ===== Kiosk / demo mode ===== -->
   <section class="screen" id="screen-kiosk">
     <div class="kiosk-frame">
+      <button class="kiosk-exit-btn" id="kiosk-exit-btn" aria-label="Выйти из демо-режима">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
       <div class="kiosk-left">
         <div class="kiosk-brand" id="kiosk-brand">Расписание</div>
         <div class="kiosk-clock" id="kiosk-clock">00:00</div>
@@ -583,15 +607,21 @@
         </button>
       </div>
 
-      <div class="view-toggle" id="view-toggle">
-        <button class="vt-btn active" data-mode="day">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/></svg>
-          День
-        </button>
-        <button class="vt-btn" data-mode="week">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M9 4v18M15 4v18"/></svg>
-          Неделя
-        </button>
+      <div class="toggles-row">
+        <div class="view-toggle" id="view-toggle">
+          <button class="vt-btn active" data-mode="day">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/></svg>
+            День
+          </button>
+          <button class="vt-btn" data-mode="week">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M9 4v18M15 4v18"/></svg>
+            Неделя
+          </button>
+        </div>
+        <div class="week-badge" id="week-badge" title="Определяет, какие пары показывать в ячейках с двумя вариантами">
+          <span class="wb-num" id="wb-num">—</span>
+          <span class="wb-parity" id="wb-parity">—</span>
+        </div>
       </div>
 
       <div class="day-tabs" id="day-tabs"></div>
@@ -672,6 +702,27 @@
   };
   // JS Date.getDay() -> canonical day name (used to find "today")
   var WEEKDAY_INDEX = {1:'ПОНЕДЕЛЬНИК',2:'ВТОРНИК',3:'СРЕДА',4:'ЧЕТВЕРГ',5:'ПЯТНИЦА',6:'СУББОТА',0:'ВОСКРЕСЕНЬЕ'};
+
+  // ---------- week parity (some slots alternate subjects week to week) ----------
+  function getISOWeekNumber(date){
+    var d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    var dayNum = (d.getUTCDay()+6)%7; // Monday=0..Sunday=6
+    d.setUTCDate(d.getUTCDate()-dayNum+3); // nearest Thursday
+    var firstThursday = new Date(Date.UTC(d.getUTCFullYear(),0,4));
+    var firstDayNum = (firstThursday.getUTCDay()+6)%7;
+    firstThursday.setUTCDate(firstThursday.getUTCDate()-firstDayNum+3);
+    return 1 + Math.round((d-firstThursday)/(7*24*3600*1000));
+  }
+  function getCurrentWeekInfo(){
+    var num = getISOWeekNumber(new Date());
+    return { num: num, parity: (num%2===0) ? 'even' : 'odd' };
+  }
+  // Keep only lessons that actually happen this week: entries with no parity tag
+  // run every week; tagged ones only show up on their matching even/odd week.
+  function filterByParity(lessons){
+    var parity = getCurrentWeekInfo().parity;
+    return lessons.filter(function(l){ return !l.parity || l.parity===parity; });
+  }
 
   var STORAGE_KEY = 'schedule-app-state-v1';
   var PREFS_KEY = 'schedule-app-prefs-v1';
@@ -803,22 +854,19 @@
     return { visible: visible, hidden: hidden };
   }
 
-  function roundTo5(x){ return Math.round(x/5)*5; }
   function labelFromMin(m){
     var h=Math.floor(m/60), mm=((m%60)+60)%60;
     var p=function(n){ return (n<10?'0':'')+n; };
     return p(h)+':'+p(mm);
   }
-  function pushLesson(list, raw, startMin, endMin, isHalf){
+  function pushLesson(list, raw, startMin, endMin, parity){
     var entry = parseEntry(raw);
-    var note = entry.note;
-    if(isHalf) note = note ? ('½ пары · '+note) : '½ пары';
     list.push({
       startMin: startMin, endMin: endMin,
       startLabel: startMin!=null? labelFromMin(startMin) : '',
       endLabel: endMin!=null? labelFromMin(endMin) : '',
       time: (startMin!=null&&endMin!=null)? (labelFromMin(startMin)+'-'+labelFromMin(endMin)) : '',
-      subject: entry.subject, teacher: entry.teacher, room: entry.room, note: note, half: !!isHalf
+      subject: entry.subject, teacher: entry.teacher, room: entry.room, note: entry.note, parity: parity || null
     });
   }
 
@@ -873,14 +921,13 @@
         var tp = parseTime(timeVal);
 
         // The row right below a time-row is normally just visual spacing (its content
-        // is empty). But this sheet sometimes uses it to fit a "half pair": a lesson
-        // that only takes the second half of the slot. Text placed on the time-row
-        // itself is a normal full-length lesson; text placed only on the row below is
-        // a half-pair starting around the midpoint; text on BOTH rows means two
-        // different half-pairs back to back in the same slot.
+        // is empty). But this sheet sometimes uses that spare row to fit a SECOND
+        // subject into the same slot, for weeks that alternate: the text on the
+        // time-row itself is what happens on even ("чётная") weeks, and text placed
+        // only on the row below is what happens on odd ("нечётная") weeks. Both run
+        // for the slot's full duration — nothing here is a half-length lesson.
         var nextRow = rows[r3+1] || [];
         var nextIsOwnTimeRow = ((nextRow[hoursCol]||'').toString().trim() !== '');
-        var midMin = (tp.startMin!=null && tp.endMin!=null) ? roundTo5((tp.startMin+tp.endMin)/2) : null;
 
         for(var ci=0; ci<groupNames.length; ci++){
           var gname = groupNames[ci];
@@ -895,14 +942,16 @@
           if(!byGroup[gname]) byGroup[gname]={};
           if(!byGroup[gname][currentDay]) byGroup[gname][currentDay]=[];
 
-          if(hasHere && hasNext && midMin!=null){
-            pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, midMin, true);
-            pushLesson(byGroup[gname][currentDay], rawNext, midMin, tp.endMin, true);
+          if(hasHere && hasNext){
+            // Two different subjects alternating week to week in the same slot.
+            pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, 'even');
+            pushLesson(byGroup[gname][currentDay], rawNext, tp.startMin, tp.endMin, 'odd');
           } else if(hasHere){
-            pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, false);
+            pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, null);
           } else if(hasNext){
-            var halfStart = midMin!=null ? midMin : tp.startMin;
-            pushLesson(byGroup[gname][currentDay], rawNext, halfStart, tp.endMin, true);
+            // Only present in the lower cell — this specific subject only happens
+            // on odd weeks; the slot is free on even weeks.
+            pushLesson(byGroup[gname][currentDay], rawNext, tp.startMin, tp.endMin, 'odd');
           }
         }
       }
@@ -1200,7 +1249,7 @@
     var byDay = state.parsed.byGroup[g];
     if(!byDay) return 0;
     var n = 0;
-    Object.keys(byDay).forEach(function(d){ n += byDay[d].length; });
+    Object.keys(byDay).forEach(function(d){ n += filterByParity(byDay[d]).length; });
     return n;
   }
   function pluralPairs(n){
@@ -1295,10 +1344,22 @@
     return items;
   }
 
-  function computeDayProgress(lessons){
+  function getDayRelation(day){
+    var today = WEEKDAY_INDEX[new Date().getDay()];
+    var idxToday = state.parsed.dayOrder.indexOf(today);
+    var idxDay = state.parsed.dayOrder.indexOf(day);
+    if(idxToday===-1 || idxDay===-1) return 'future';
+    if(idxDay===idxToday) return 'today';
+    return idxDay<idxToday ? 'past' : 'future';
+  }
+
+  function computeDayProgress(lessons, relation){
     var timed = lessons.filter(function(l){ return l.startMin!=null; });
     var dayStart = timed.length? Math.min.apply(null, timed.map(function(l){return l.startMin;})) : null;
     var dayEnd = timed.length? Math.max.apply(null, timed.map(function(l){return l.endMin;})) : null;
+    if(relation==='past'){
+      return {pct:100, dayStart:dayStart, dayEnd:dayEnd, statusLabel:'День завершён'};
+    }
     var nm = nowMinutes();
     var pct = 0;
     if(dayStart!=null && dayEnd!=null && dayEnd>dayStart){
@@ -1317,14 +1378,19 @@
 
   var BREAK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>';
 
-  function timelineHtml(lessons, isToday){
+  function timelineHtml(lessons, relation){
+    // relation: 'past' | 'today' | 'future'. Kept accepting a boolean too (true→'today', false→'future')
+    // for any old call sites, so nothing else needs to change.
+    if(relation===true) relation='today';
+    if(relation===false) relation='future';
     var items = buildTimelineItems(lessons);
     var html = '<ul class="timeline">';
     items.forEach(function(item, idx){
       var isLast = idx===items.length-1;
       if(item.type==='break'){
         var status='plain';
-        if(isToday){
+        if(relation==='past') status='done';
+        else if(relation==='today'){
           var nmm=nowMinutes();
           if(nmm<item.startMin) status='upcoming';
           else if(nmm<item.endMin) status='current';
@@ -1348,7 +1414,8 @@
       }
       var l = item.l;
       var status = 'plain';
-      if(isToday && l.startMin!=null){
+      if(relation==='past' && l.startMin!=null) status='done';
+      else if(relation==='today' && l.startMin!=null){
         var nm2 = nowMinutes();
         if(nm2 < l.startMin) status='upcoming';
         else if(nm2 < l.endMin) status='current';
@@ -1397,42 +1464,40 @@
   function renderContent(){
     var box = $('content');
     var day = state.viewedDay;
-    var today = WEEKDAY_INDEX[new Date().getDay()];
-    var isToday = day===today;
-    var lessons = (state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][day]) || [];
+    var relation = getDayRelation(day);
+    var lessons = filterByParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][day]) || []);
 
     if(lessons.length===0){ box.innerHTML = emptyStateHtml(day); return; }
 
     var html = '';
-    if(isToday){
-      var prog = computeDayProgress(lessons);
+    if(relation==='today' || relation==='past'){
+      var prog = computeDayProgress(lessons, relation);
       html += '<div class="progress-card">'+
-        '<div class="progress-top"><div class="now">'+fmtClock()+'</div><div class="label">'+esc(prog.statusLabel)+'</div></div>'+
+        '<div class="progress-top"><div class="now">'+(relation==='past'? '✓' : fmtClock())+'</div><div class="label">'+esc(prog.statusLabel)+'</div></div>'+
         '<div class="progress-track"><div class="progress-fill" style="width:'+prog.pct+'%"></div></div>'+
         '<div class="progress-foot"><span>'+(prog.dayStart!=null? minToLabel(prog.dayStart):'—')+'</span><span>'+(prog.dayEnd!=null? minToLabel(prog.dayEnd):'—')+'</span></div>'+
       '</div>';
     }
-    html += timelineHtml(lessons, isToday);
+    html += timelineHtml(lessons, relation);
     box.innerHTML = html;
   }
 
   function renderWeekContent(){
     var box = $('content');
-    var today = WEEKDAY_INDEX[new Date().getDay()];
     var html = '';
     state.parsed.dayOrder.forEach(function(d){
-      var lessons = (state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][d]) || [];
-      var isToday = d===today;
+      var lessons = filterByParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][d]) || []);
+      var relation = getDayRelation(d);
       html += '<div class="week-day-block">';
-      html += '<div class="week-day-head"><span>'+(DAY_TITLE[d]||d)+'</span>'+(isToday?'<span class="week-today-badge">Сегодня</span>':'')+'</div>';
+      html += '<div class="week-day-head"><span>'+(DAY_TITLE[d]||d)+'</span>'+(relation==='today'?'<span class="week-today-badge">Сегодня</span>':(relation==='past'?'<span class="week-today-badge week-past-badge">Завершён</span>':''))+'</div>';
       if(lessons.length===0){
         html += '<div class="week-empty">Пар нет</div>';
       } else {
-        if(isToday){
-          var prog = computeDayProgress(lessons);
+        if(relation==='today' || relation==='past'){
+          var prog = computeDayProgress(lessons, relation);
           html += '<div class="week-progress"><div class="week-progress-fill" style="width:'+prog.pct+'%"></div></div>';
         }
-        html += timelineHtml(lessons, isToday);
+        html += timelineHtml(lessons, relation);
       }
       html += '</div>';
     });
@@ -1450,8 +1515,18 @@
     return p(h)+':'+p(mm);
   }
 
+  function renderWeekBadge(){
+    var info = getCurrentWeekInfo();
+    $('wb-num').textContent = 'Нед. '+info.num;
+    $('wb-parity').textContent = info.parity==='even' ? 'чётная' : 'нечётная';
+    var badge = $('week-badge');
+    badge.classList.toggle('is-even', info.parity==='even');
+    badge.classList.toggle('is-odd', info.parity==='odd');
+  }
+
   function renderMain(){
     renderTopbar();
+    renderWeekBadge();
     renderDayTabs();
     renderContentDispatch();
   }
@@ -1513,14 +1588,18 @@
   });
   $('sheet-reupload').addEventListener('click', async function(){
     closeSheet();
-    await clearState();
+    // Just navigate to the entry screen — don't wipe the saved schedule/group.
+    // A page refresh doesn't lose it either, so this shouldn't behave differently.
     pendingFile = null;
     $('drop-zone').querySelector('.drop-title').textContent = 'Загрузить своё';
     $('drop-zone').querySelector('.drop-sub').textContent = 'выбрать файл .xls / .xlsx или перетащить сюда';
     $('btn-parse').style.display='none';
     $('file-input').value='';
     setUploadError('');
-    renderQuickContinue(null);
+    var saved = await loadStateRaw();
+    var isStale = saved && saved.parserVersion !== PARSER_VERSION;
+    var validSaved = (saved && !isStale && saved.parsed && saved.selectedGroup && saved.parsed.byGroup[saved.selectedGroup]) ? saved : null;
+    renderQuickContinue(validSaved);
     show('screen-upload');
   });
 
@@ -1544,6 +1623,12 @@
     applyDemoSwitch();
     savePrefs();
     markInteraction();
+    if(prefs.demoEnabled){
+      // Turning it on is itself the "show me" action — jump straight into the
+      // demo instead of making them wait another 10 idle minutes to see it.
+      closeSheet();
+      enterKiosk();
+    }
   });
 
   // ---------- share sheet ----------
@@ -1582,7 +1667,7 @@
     var nm = nowMinutes();
     var out = [];
     parsed.groups.forEach(function(g){
-      var lessons = (parsed.byGroup[g] && parsed.byGroup[g][today]) || [];
+      var lessons = filterByParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []);
       var hit = lessons.some(function(l){ return l.startMin!=null && nm>=l.startMin && nm<l.endMin; });
       if(hit) out.push(g);
     });
@@ -1606,11 +1691,11 @@
     var g = kioskState.groups[kioskState.idx];
     if(!g) return;
     var today = WEEKDAY_INDEX[new Date().getDay()];
-    var lessons = (parsed.byGroup[g] && parsed.byGroup[g][today]) || [];
+    var lessons = filterByParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []);
     $('kiosk-group-name').textContent = g;
     $('kiosk-group-day').textContent = DAY_TITLE[today]||today;
-    $('kiosk-content').innerHTML = timelineHtml(lessons, true);
-    var prog = computeDayProgress(lessons);
+    $('kiosk-content').innerHTML = timelineHtml(lessons, 'today');
+    var prog = computeDayProgress(lessons, 'today');
     $('kiosk-progress-fill').style.width = prog.pct+'%';
     $('kiosk-progress-from').textContent = prog.dayStart!=null? minToLabel(prog.dayStart):'—';
     $('kiosk-progress-to').textContent = prog.dayEnd!=null? minToLabel(prog.dayEnd):'—';
@@ -1654,9 +1739,7 @@
     }, 10*60*1000);
   }
 
-  ['pointerdown','keydown'].forEach(function(ev){
-    $('screen-kiosk').addEventListener(ev, exitKiosk);
-  });
+  $('kiosk-exit-btn').addEventListener('click', exitKiosk);
 
   // idle watcher — only fires while sitting on the login screen with demo mode on
   setInterval(function(){

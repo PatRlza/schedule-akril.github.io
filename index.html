@@ -272,7 +272,15 @@
   .icon-btn svg{width:20px;height:20px;color:var(--text);}
   .icon-btn:active{background:var(--surface-container-high);}
 
-  .toggles-row{display:flex;align-items:center;gap:8px;}
+  .toggles-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;row-gap:8px;}
+  .mode-btn{
+    height:40px;box-sizing:border-box;
+    display:inline-flex;align-items:center;gap:6px;
+    border:none;background:var(--surface);border-radius:100px;box-shadow:var(--shadow);
+    padding:0 14px;font-size:12.5px;font-weight:600;color:var(--text-secondary);flex-shrink:0;
+  }
+  .mode-btn svg{width:14px;height:14px;flex-shrink:0;}
+  .mode-btn.active{background:var(--primary);color:var(--on-primary);}
   .view-toggle{
     height:40px;box-sizing:border-box;
     display:inline-flex;align-items:center;background:var(--surface);border-radius:100px;
@@ -392,16 +400,15 @@
   .lesson.is-current .lesson-dot{background:var(--secondary);box-shadow:0 0 0 4px var(--secondary-container);}
 
   .lesson.is-tappable .lesson-card{cursor:pointer;}
-  .lesson-handle{width:32px;height:4px;border-radius:100px;background:var(--outline);margin:0 auto 8px;}
+  .lesson-handle{width:32px;height:4px;border-radius:100px;background:var(--outline);margin:12px auto 0;clear:both;}
   .lesson-actions{
     display:flex;gap:8px;max-height:0;opacity:0;overflow:hidden;margin-top:0;
     transition:max-height .25s ease, opacity .2s ease, margin-top .25s ease;
   }
-  .lesson.expanded .lesson-actions{max-height:56px;opacity:1;margin-top:10px;clear:both;}
+  .lesson.expanded .lesson-actions{max-height:56px;opacity:1;margin-top:8px;}
   .lesson-action-btn{
     flex:1;border:none;border-radius:100px;background:var(--surface-container-high);color:var(--text);
     font-size:12.5px;font-weight:600;padding:9px 10px;display:flex;align-items:center;justify-content:center;gap:6px;
-    text-decoration:none;white-space:nowrap;
   }
   .lesson-action-btn:active{background:var(--outline);}
   .lesson-action-btn svg{width:15px;height:15px;flex-shrink:0;}
@@ -560,6 +567,21 @@
     </div>
   </section>
 
+  <!-- ===== Teacher picker ===== -->
+  <section class="screen" id="screen-pick-teacher">
+    <div class="picker">
+      <div class="picker-top">
+        <h2>Выберите преподавателя</h2>
+        <p id="pick-sub-teacher">Найдены преподаватели в расписании</p>
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="teacher-search" type="text" placeholder="Например, Иванов И.И." autocomplete="off">
+        </div>
+      </div>
+      <div class="group-list" id="teacher-list"></div>
+    </div>
+  </section>
+
   <!-- ===== Main schedule ===== -->
   <section class="screen" id="screen-main">
     <div class="header-sticky">
@@ -577,6 +599,10 @@
       </div>
 
       <div class="toggles-row">
+        <button class="mode-btn" id="mode-teacher-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Преподаватели
+        </button>
         <div class="view-toggle" id="view-toggle">
           <button class="vt-btn active" data-mode="day">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18"/></svg>
@@ -708,7 +734,7 @@
   var PREFS_KEY = 'schedule-app-prefs-v1';
   // Bump this whenever the parsing logic changes — it guards against silently
   // showing a schedule that was parsed by an older, buggier version of this app.
-  var PARSER_VERSION = 2;
+  var PARSER_VERSION = 3;
   var GITHUB_OWNER = 'PatRlza';
   var GITHUB_REPO = 'schedule-akrilk';
   var PAGE_URL = 'https://patrlza.github.io/schedule-akrilk/';
@@ -718,7 +744,7 @@
   var kioskTouchedSinceEntry = false;
   var kioskGroupIdx = 0;
 
-  var state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null, viewMode:'day' };
+  var state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null, viewMode:'day', browseMode:'group', selectedTeacher:null };
   var prefs = { theme:'light', demoEnabled:false };
   var tickTimer=null;
   var BREAK_MIN_GAP = 15;   // minutes — shorter gaps are just passing time between pairs
@@ -927,9 +953,16 @@
           if(!byGroup[gname][currentDay]) byGroup[gname][currentDay]=[];
 
           if(hasHere && hasNext){
-            // Two different subjects alternating week to week in the same slot.
-            pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, 'even');
-            pushLesson(byGroup[gname][currentDay], rawNext, tp.startMin, tp.endMin, 'odd');
+            if(rawHere.trim()===rawNext.trim()){
+              // A merged cell can get its text duplicated into both rows by the
+              // XLSX reader — that's one lesson every week, not two alternating
+              // ones, otherwise it'd wrongly show up "on both weeks" at once.
+              pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, null);
+            } else {
+              // Two different subjects alternating week to week in the same slot.
+              pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, 'even');
+              pushLesson(byGroup[gname][currentDay], rawNext, tp.startMin, tp.endMin, 'odd');
+            }
           } else if(hasHere){
             pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, null);
           } else if(hasNext){
@@ -1252,6 +1285,7 @@
 
   async function selectGroup(g){
     markInteraction();
+    state.browseMode = 'group';
     state.selectedGroup = g;
     var today = WEEKDAY_INDEX[new Date().getDay()];
     state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
@@ -1266,10 +1300,101 @@
     startTicking();
   }
 
+  // ---------- teacher picker (browse the same schedule by teacher) ----------
+  // Built once per parsed workbook and cached on it — every group/day's
+  // lessons collapsed into a per-teacher view, each entry keeping which
+  // group it belongs to (shown in place of the teacher's own name, since
+  // that's now implied by which teacher you picked).
+  function getTeacherIndex(){
+    if(state.parsed._teacherIndex) return state.parsed._teacherIndex;
+    var byTeacher = {};
+    state.parsed.groups.forEach(function(g){
+      var byDay = state.parsed.byGroup[g];
+      if(!byDay) return;
+      Object.keys(byDay).forEach(function(day){
+        byDay[day].forEach(function(l){
+          if(!l.teacher) return;
+          if(!byTeacher[l.teacher]) byTeacher[l.teacher] = {};
+          if(!byTeacher[l.teacher][day]) byTeacher[l.teacher][day] = [];
+          byTeacher[l.teacher][day].push(Object.assign({}, l, {group: g}));
+        });
+      });
+    });
+    var teachers = Object.keys(byTeacher).sort(function(a,b){ return a.localeCompare(b,'ru'); });
+    var idx = { byTeacher: byTeacher, teachers: teachers };
+    state.parsed._teacherIndex = idx;
+    return idx;
+  }
+
+  function countLessonsForTeacher(name){
+    var byDay = getTeacherIndex().byTeacher[name];
+    if(!byDay) return 0;
+    var n = 0;
+    Object.keys(byDay).forEach(function(d){ n += annotateParity(byDay[d]).filter(function(l){return !l.isGhost;}).length; });
+    return n;
+  }
+
+  function renderTeacherPicker(){
+    var teachers = getTeacherIndex().teachers;
+    $('pick-sub-teacher').textContent = 'Найдено преподавателей: ' + teachers.length;
+    renderTeacherList(teachers);
+    $('teacher-search').value = '';
+  }
+
+  function renderTeacherList(list){
+    var box = $('teacher-list');
+    if(list.length===0){
+      box.innerHTML = '<div class="empty-note">Ничего не нашлось. Проверьте написание.</div>';
+      return;
+    }
+    box.innerHTML = list.map(function(name){
+      var count = countLessonsForTeacher(name);
+      var selected = name===state.selectedTeacher;
+      return '<button class="group-item'+(selected?' selected':'')+'" data-teacher="'+esc(name)+'">'+
+        '<span class="g-name">'+esc(name)+'</span>'+
+        '<span class="g-hint">'+count+' '+pluralPairs(count)+'/нед.</span>'+
+      '</button>';
+    }).join('');
+    box.querySelectorAll('.group-item').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        selectTeacher(btn.getAttribute('data-teacher'));
+      });
+    });
+  }
+
+  $('teacher-search').addEventListener('input', function(e){
+    var q = e.target.value.trim().toLowerCase();
+    var teachers = getTeacherIndex().teachers;
+    var filtered = q ? teachers.filter(function(t){ return t.toLowerCase().indexOf(q)>=0; }) : teachers;
+    renderTeacherList(filtered);
+  });
+
+  async function selectTeacher(name){
+    markInteraction();
+    state.browseMode = 'teacher';
+    state.selectedTeacher = name;
+    var today = WEEKDAY_INDEX[new Date().getDay()];
+    state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
+    renderMain();
+    show('screen-main');
+    startTicking();
+  }
+
+  // Single source of "which lessons for this day", regardless of whether
+  // we're currently browsing by group or by teacher.
+  function getRawLessons(day){
+    if(state.browseMode==='teacher'){
+      var idx = getTeacherIndex();
+      return (state.selectedTeacher && idx.byTeacher[state.selectedTeacher] && idx.byTeacher[state.selectedTeacher][day]) || [];
+    }
+    return (state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][day]) || [];
+  }
+
   // ---------- main schedule ----------
   function renderTopbar(){
     $('term-title').textContent = state.parsed.term || 'Расписание';
-    $('current-group').textContent = state.selectedGroup;
+    $('current-group').textContent = state.browseMode==='teacher' ? (state.selectedTeacher||'—') : state.selectedGroup;
+    $('mode-teacher-btn').classList.toggle('active', state.browseMode==='teacher');
   }
 
   function renderDayTabs(){
@@ -1451,12 +1576,13 @@
     return 'data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
   }
   function lessonActionsHtml(day, l){
-    var alarmHref = buildAlarmHref(l);
+    var isAndroid = /Android/i.test(navigator.userAgent);
+    var alarmHref = isAndroid ? buildAlarmHref(l) : null;
     var calHref = buildCalendarHref(day, l);
     if(!alarmHref && !calHref) return '';
     return '<div class="lesson-actions">'+
-      (alarmHref? '<a class="lesson-action-btn" href="'+esc(alarmHref)+'">'+ALARM_ICON+'Будильник</a>' : '')+
-      (calHref? '<a class="lesson-action-btn" href="'+esc(calHref)+'" download="lesson.ics">'+CAL_ICON+'Календарь</a>' : '')+
+      (alarmHref? '<button type="button" class="lesson-action-btn" data-alarm-href="'+esc(alarmHref)+'">'+ALARM_ICON+'Будильник</button>' : '')+
+      (calHref? '<button type="button" class="lesson-action-btn" data-cal-href="'+esc(calHref)+'">'+CAL_ICON+'Календарь</button>' : '')+
     '</div>';
   }
 
@@ -1516,7 +1642,8 @@
         lchip = '<span class="status-chip status-ghost">'+(l.parity==='even'?'на чётной неделе':'на нечётной неделе')+'</span>';
       }
       var metaParts = [];
-      if(l.teacher) metaParts.push(esc(l.teacher));
+      if(l.group) metaParts.push(esc(l.group));
+      else if(l.teacher) metaParts.push(esc(l.teacher));
       if(l.room) metaParts.push(esc(l.room));
       var tappable = !l.isGhost && l.startMin!=null;
       var key = lessonKey(day, l);
@@ -1534,11 +1661,10 @@
         '</div>'+
         '<div class="lesson-rail"><div class="lesson-dot"></div>'+(isLast?'':'<div class="lesson-line"></div>')+'</div>'+
         '<div class="lesson-card">'+
-          (tappable? '<div class="lesson-handle"></div>':'')+
           '<div class="lesson-head">'+lchip+'<div class="lesson-subject">'+esc(l.subject||'Занятие')+'</div></div>'+
           (metaParts.length? '<div class="lesson-meta">'+metaParts.join(' · ')+'</div>':'')+
           (l.note? '<div class="lesson-note">'+esc(l.note)+'</div>':'')+
-          (tappable? lessonActionsHtml(day, l) : '')+
+          (tappable? '<div class="lesson-handle"></div>'+lessonActionsHtml(day, l) : '')+
         '</div>'+
       '</li>';
     });
@@ -1559,7 +1685,7 @@
     var box = $('content');
     var day = state.viewedDay;
     var relation = getDayRelation(day);
-    var lessons = annotateParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][day]) || []);
+    var lessons = annotateParity(getRawLessons(day));
 
     if(lessons.length===0){ box.innerHTML = emptyStateHtml(day); return; }
 
@@ -1580,7 +1706,7 @@
     var box = $('content');
     var html = '';
     state.parsed.dayOrder.forEach(function(d){
-      var lessons = annotateParity((state.parsed.byGroup[state.selectedGroup] && state.parsed.byGroup[state.selectedGroup][d]) || []);
+      var lessons = annotateParity(getRawLessons(d));
       var relation = getDayRelation(d);
       html += '<div class="week-day-block">';
       html += '<div class="week-day-head"><span>'+(DAY_TITLE[d]||d)+'</span>'+(relation==='today'?'<span class="week-today-badge">Сегодня</span>':(relation==='past'?'<span class="week-today-badge week-past-badge">Завершён</span>':''))+'</div>';
@@ -1649,7 +1775,24 @@
   // Tap a lesson tile to reveal its alarm/calendar shortcuts. Delegated on
   // the container so it keeps working across re-renders.
   $('content').addEventListener('click', function(e){
-    if(e.target.closest('.lesson-actions')) return; // let the action link do its own thing
+    var actionBtn = e.target.closest('.lesson-action-btn');
+    if(actionBtn){
+      e.stopPropagation();
+      markInteraction();
+      var alarmHref = actionBtn.getAttribute('data-alarm-href');
+      var calHref = actionBtn.getAttribute('data-cal-href');
+      if(alarmHref){
+        window.location.href = alarmHref;
+      } else if(calHref){
+        var a = document.createElement('a');
+        a.href = calHref;
+        a.download = 'lesson.ics';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      return;
+    }
     var li = e.target.closest('.lesson.is-tappable');
     if(!li) return;
     var key = li.getAttribute('data-lesson-key');
@@ -1689,12 +1832,34 @@
 
   $('settings-btn').addEventListener('click', openSheet);
   $('group-switch-btn').addEventListener('click', function(){
-    renderGroupPicker();
-    show('screen-pick');
+    markInteraction();
+    if(state.browseMode==='teacher'){
+      renderTeacherPicker();
+      show('screen-pick-teacher');
+    } else {
+      renderGroupPicker();
+      show('screen-pick');
+    }
+  });
+  $('mode-teacher-btn').addEventListener('click', function(){
+    markInteraction();
+    if(state.browseMode==='teacher'){
+      // Toggle back to the last group — the teacher stays remembered for next time.
+      state.browseMode = 'group';
+      if(state.selectedGroup){ renderMain(); }
+      else { renderGroupPicker(); show('screen-pick'); }
+    } else if(state.selectedTeacher){
+      state.browseMode = 'teacher';
+      renderMain();
+    } else {
+      renderTeacherPicker();
+      show('screen-pick-teacher');
+    }
   });
   $('scrim').addEventListener('click', closeSheet);
   $('sheet-change-group').addEventListener('click', function(){
     closeSheet();
+    state.browseMode = 'group';
     renderGroupPicker();
     show('screen-pick');
   });
@@ -1797,6 +1962,7 @@
     kioskLive = true;
     kioskTouchedSinceEntry = false;
     kioskGroupIdx = 0;
+    state.browseMode = 'group';
     state.selectedGroup = state.parsed.groups[kioskGroupIdx];
     var today = WEEKDAY_INDEX[new Date().getDay()];
     state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];

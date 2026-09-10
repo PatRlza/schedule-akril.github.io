@@ -412,7 +412,8 @@
   }
   .lesson-action-btn:active{background:var(--outline);}
   .lesson-action-btn svg{width:15px;height:15px;flex-shrink:0;}
-  .lesson.expanded .lesson-card{position:relative;z-index:16;box-shadow:0 6px 24px rgba(20,17,50,.2);}
+  .lesson.expanded{position:relative;z-index:16;}
+  .lesson.expanded .lesson-card{box-shadow:0 6px 24px rgba(20,17,50,.2);}
   .lesson-scrim{
     position:fixed;inset:0;background:rgba(20,17,50,.4);opacity:0;pointer-events:none;
     transition:opacity .2s ease;z-index:15;

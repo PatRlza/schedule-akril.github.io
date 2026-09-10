@@ -286,13 +286,14 @@
   .vt-btn.active{background:var(--primary);color:var(--on-primary);}
 
   .week-badge{
-    display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+    display:inline-flex;align-items:center;gap:10px;
     background:var(--surface);border-radius:100px;box-shadow:var(--shadow);
-    padding:4px 18px;line-height:1.15;flex-shrink:0;min-width:74px;
+    padding:6px 16px 6px 14px;flex-shrink:0;
   }
-  .week-badge .wb-num{font-size:14px;font-weight:700;color:var(--text);}
-  .week-badge .wb-word{font-size:9.5px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.2px;}
-  .week-badge .wb-parity{font-size:9.5px;font-weight:600;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.2px;margin-top:1px;}
+  .week-badge .wb-text{display:flex;flex-direction:column;line-height:1.2;}
+  .week-badge .wb-word{font-size:10.5px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.2px;}
+  .week-badge .wb-parity{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;color:var(--text-tertiary);}
+  .week-badge .wb-num{font-family:'Roboto Mono',monospace;font-size:18px;font-weight:700;color:var(--text);}
   .week-badge.is-even .wb-parity{color:var(--secondary);}
   .week-badge.is-odd .wb-parity{color:var(--primary);}
 
@@ -365,15 +366,15 @@
     flex:1;background:var(--surface);border-radius:var(--radius-md);padding:14px 16px;
     box-shadow:var(--shadow);min-width:0;
   }
-  .lesson-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px;}
+  .lesson-head{display:flow-root;margin-bottom:4px;}
   .lesson-subject{font-size:15px;font-weight:600;line-height:1.35;min-width:0;overflow-wrap:break-word;}
-  .lesson-meta{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-top:2px;}
+  .lesson-meta{font-size:13px;color:var(--text-secondary);line-height:1.5;margin-top:2px;clear:both;}
   .lesson-note{
     display:inline-block;margin-top:6px;font-size:11.5px;font-weight:500;color:var(--primary);
-    background:var(--primary-container);padding:2px 8px;border-radius:100px;
+    background:var(--primary-container);padding:2px 8px;border-radius:100px;clear:both;
   }
   .status-chip{
-    flex-shrink:0;font-size:11px;font-weight:600;padding:4px 9px;border-radius:100px;
+    float:right;margin:1px 0 6px 10px;font-size:11px;font-weight:600;padding:4px 9px;border-radius:100px;
     white-space:nowrap;
   }
   .status-current{background:var(--secondary-container);color:var(--on-secondary-container);}
@@ -462,39 +463,10 @@
 
   /* ---------- Kiosk / demo mode ---------- */
   #screen-kiosk{background:var(--bg);}
-  .kiosk-layout{display:flex;width:100%;min-height:100vh;}
-  .kiosk-main{
-    flex:1;min-width:0;overflow-y:auto;
-    padding:calc(20px + env(safe-area-inset-top)) 24px calc(28px + env(safe-area-inset-bottom)) 24px;
-  }
-  .kiosk-daytitle{font-size:15px;font-weight:600;color:var(--text-secondary);margin-bottom:12px;}
-  .kiosk-side{
-    width:220px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--outline);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:24px 16px;position:relative;text-align:center;
-  }
-  .kiosk-side-inner{display:flex;flex-direction:column;align-items:center;gap:6px;}
-  .kiosk-exit-btn{
-    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
-    border:none;background:var(--surface-container);color:var(--text-secondary);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .kiosk-exit-btn:active{background:var(--surface-container-high);}
-  .kiosk-exit-btn svg{width:15px;height:15px;}
-  .kiosk-mode-badge{
-    font-size:11px;font-weight:600;color:var(--on-primary);background:var(--primary);
-    padding:4px 12px;border-radius:100px;margin-bottom:10px;
-  }
-  .kiosk-side-label{font-size:11.5px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.3px;}
-  .kiosk-group-name{font-size:24px;font-weight:800;letter-spacing:-.3px;line-height:1.15;word-break:break-word;}
-  .kiosk-group-day{font-size:13px;color:var(--text-secondary);}
-
-  @media (max-width: 640px){
-    .kiosk-layout{flex-direction:column-reverse;}
-    .kiosk-side{width:100%;flex-direction:row;justify-content:center;gap:10px;padding:14px 16px;border-left:none;border-top:1px solid var(--outline);}
-    .kiosk-side-inner{flex-direction:row;gap:10px;align-items:baseline;}
-    .kiosk-mode-badge, .kiosk-side-label{margin-bottom:0;}
-    .kiosk-exit-btn{top:10px;right:10px;}
+  .kiosk-daytitle{
+    font-size:14.5px;font-weight:600;color:var(--text-secondary);
+    flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    text-transform:capitalize;
   }
 
   a{color:inherit;}
@@ -559,27 +531,38 @@
 
   <!-- ===== Kiosk / demo mode ===== -->
   <section class="screen" id="screen-kiosk">
-    <div class="kiosk-layout">
-      <div class="kiosk-main">
-        <div class="kiosk-daytitle" id="kiosk-daytitle">—</div>
-        <div class="progress-card">
-          <div class="progress-top"><div class="now" id="kiosk-clock">00:00</div><div class="label" id="kiosk-next">—</div></div>
-          <div class="progress-track"><div class="progress-fill" id="kiosk-progress-fill" style="width:0%"></div></div>
-          <div class="progress-foot"><span id="kiosk-progress-from">—</span><span id="kiosk-progress-to">—</span></div>
+    <div class="header-sticky">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="term-title" id="kiosk-term-title">—</div>
+          <div class="group-btn" style="cursor:default;">
+            <span id="kiosk-group-name">—</span>
+          </div>
         </div>
-        <div id="kiosk-content"></div>
-      </div>
-      <div class="kiosk-side">
-        <button class="kiosk-exit-btn" id="kiosk-exit-btn" aria-label="Выйти из демо-режима">
+        <button class="icon-btn" id="kiosk-exit-btn" aria-label="Закрыть">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
         </button>
-        <div class="kiosk-side-inner">
-          <div class="kiosk-mode-badge">Демо-режим</div>
-          <div class="kiosk-side-label">Сейчас идёт</div>
-          <div class="kiosk-group-name" id="kiosk-group-name">—</div>
-          <div class="kiosk-group-day" id="kiosk-group-day">—</div>
+      </div>
+
+      <div class="toggles-row">
+        <div class="kiosk-daytitle" id="kiosk-daytitle">—</div>
+        <div class="week-badge" id="kiosk-week-badge">
+          <div class="wb-text">
+            <span class="wb-word">неделя</span>
+            <span class="wb-parity" id="kiosk-wb-parity">—</span>
+          </div>
+          <span class="wb-num" id="kiosk-wb-num">—</span>
         </div>
       </div>
+    </div>
+
+    <div class="content" id="kiosk-content-wrap">
+      <div class="progress-card">
+        <div class="progress-top"><div class="now" id="kiosk-clock">00:00</div><div class="label" id="kiosk-next">—</div></div>
+        <div class="progress-track"><div class="progress-fill" id="kiosk-progress-fill" style="width:0%"></div></div>
+        <div class="progress-foot"><span id="kiosk-progress-from">—</span><span id="kiosk-progress-to">—</span></div>
+      </div>
+      <div id="kiosk-content"></div>
     </div>
   </section>
 
@@ -626,9 +609,11 @@
           </button>
         </div>
         <div class="week-badge" id="week-badge" title="Пары другой недели показаны серым">
+          <div class="wb-text">
+            <span class="wb-word">неделя</span>
+            <span class="wb-parity" id="wb-parity">—</span>
+          </div>
           <span class="wb-num" id="wb-num">—</span>
-          <span class="wb-word">неделя</span>
-          <span class="wb-parity" id="wb-parity">—</span>
         </div>
       </div>
 
@@ -1438,7 +1423,7 @@
           '<div class="lesson-time"><div>'+minToLabel(item.startMin)+'</div><div class="end">'+minToLabel(item.endMin)+'</div></div>'+
           '<div class="lesson-rail"><div class="lesson-dot"></div>'+(isLast?'':'<div class="lesson-line"></div>')+'</div>'+
           '<div class="lesson-card">'+
-            '<div class="lesson-head"><div class="lesson-subject">'+BREAK_ICON+esc(item.label)+'</div>'+chip+'</div>'+
+            '<div class="lesson-head">'+chip+'<div class="lesson-subject">'+BREAK_ICON+esc(item.label)+'</div></div>'+
           '</div>'+
         '</li>';
         return;
@@ -1478,7 +1463,7 @@
         '</div>'+
         '<div class="lesson-rail"><div class="lesson-dot"></div>'+(isLast?'':'<div class="lesson-line"></div>')+'</div>'+
         '<div class="lesson-card">'+
-          '<div class="lesson-head"><div class="lesson-subject">'+esc(l.subject||'Занятие')+'</div>'+lchip+'</div>'+
+          '<div class="lesson-head">'+lchip+'<div class="lesson-subject">'+esc(l.subject||'Занятие')+'</div></div>'+
           (metaParts.length? '<div class="lesson-meta">'+metaParts.join(' · ')+'</div>':'')+
           (l.note? '<div class="lesson-note">'+esc(l.note)+'</div>':'')+
         '</div>'+
@@ -1728,8 +1713,8 @@
     if(!g) return;
     var today = WEEKDAY_INDEX[new Date().getDay()];
     var lessons = annotateParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []);
+    $('kiosk-term-title').textContent = parsed.term || 'Расписание';
     $('kiosk-group-name').textContent = g;
-    $('kiosk-group-day').textContent = DAY_TITLE[today]||today;
     $('kiosk-content').innerHTML = timelineHtml(lessons, 'today');
     var prog = computeDayProgress(lessons, 'today');
     $('kiosk-progress-fill').style.width = prog.pct+'%';
@@ -1738,10 +1723,20 @@
     $('kiosk-next').textContent = prog.statusLabel;
   }
 
+  function renderKioskWeekBadge(){
+    var info = getCurrentWeekInfo();
+    $('kiosk-wb-num').textContent = info.num;
+    $('kiosk-wb-parity').textContent = info.parity==='even' ? 'чётная' : 'нечётная';
+    var badge = $('kiosk-week-badge');
+    badge.classList.toggle('is-even', info.parity==='even');
+    badge.classList.toggle('is-odd', info.parity==='odd');
+  }
+
   function tickKioskClock(){
     $('kiosk-clock').textContent = fmtClock();
     var d = new Date();
     $('kiosk-daytitle').textContent = d.toLocaleDateString('ru-RU',{weekday:'long', day:'numeric', month:'long'});
+    renderKioskWeekBadge();
     if(kioskState.active) renderKioskGroup();
   }
 

@@ -274,11 +274,13 @@
 
   .toggles-row{display:flex;align-items:center;gap:8px;}
   .view-toggle{
-    display:inline-flex;background:var(--surface);border-radius:100px;
+    height:40px;box-sizing:border-box;
+    display:inline-flex;align-items:center;background:var(--surface);border-radius:100px;
     box-shadow:var(--shadow);padding:3px;gap:3px;
   }
   .vt-btn{
-    border:none;background:transparent;padding:7px 14px;border-radius:100px;
+    height:100%;box-sizing:border-box;
+    border:none;background:transparent;padding:0 14px;border-radius:100px;
     font-size:12.5px;font-weight:600;color:var(--text-secondary);
     display:flex;align-items:center;justify-content:center;gap:5px;
   }
@@ -286,9 +288,10 @@
   .vt-btn.active{background:var(--primary);color:var(--on-primary);}
 
   .week-badge{
+    height:40px;box-sizing:border-box;
     display:inline-flex;align-items:center;gap:10px;
     background:var(--surface);border-radius:100px;box-shadow:var(--shadow);
-    padding:6px 16px 6px 14px;flex-shrink:0;
+    padding:0 16px 0 14px;flex-shrink:0;
   }
   .week-badge .wb-text{display:flex;flex-direction:column;line-height:1.2;}
   .week-badge .wb-word{font-size:10.5px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.2px;}
@@ -388,6 +391,27 @@
   .lesson.is-current .lesson-card{outline:2px solid var(--secondary);outline-offset:-2px;}
   .lesson.is-current .lesson-dot{background:var(--secondary);box-shadow:0 0 0 4px var(--secondary-container);}
 
+  .lesson.is-tappable .lesson-card{cursor:pointer;}
+  .lesson-handle{width:32px;height:4px;border-radius:100px;background:var(--outline);margin:0 auto 8px;}
+  .lesson-actions{
+    display:flex;gap:8px;max-height:0;opacity:0;overflow:hidden;margin-top:0;
+    transition:max-height .25s ease, opacity .2s ease, margin-top .25s ease;
+  }
+  .lesson.expanded .lesson-actions{max-height:56px;opacity:1;margin-top:10px;clear:both;}
+  .lesson-action-btn{
+    flex:1;border:none;border-radius:100px;background:var(--surface-container-high);color:var(--text);
+    font-size:12.5px;font-weight:600;padding:9px 10px;display:flex;align-items:center;justify-content:center;gap:6px;
+    text-decoration:none;white-space:nowrap;
+  }
+  .lesson-action-btn:active{background:var(--outline);}
+  .lesson-action-btn svg{width:15px;height:15px;flex-shrink:0;}
+  .lesson.expanded .lesson-card{position:relative;z-index:16;box-shadow:0 6px 24px rgba(20,17,50,.2);}
+  .lesson-scrim{
+    position:fixed;inset:0;background:rgba(20,17,50,.4);opacity:0;pointer-events:none;
+    transition:opacity .2s ease;z-index:15;
+  }
+  .lesson-scrim.show{opacity:1;pointer-events:auto;}
+
   .lesson.is-ghost .lesson-card{background:transparent;box-shadow:none;border:1.5px dashed var(--outline);opacity:.6;}
   .lesson.is-ghost .lesson-subject{color:var(--text-tertiary);}
   .lesson.is-ghost .lesson-meta{color:var(--text-tertiary);}
@@ -461,14 +485,6 @@
   }
   .share-copy-btn.copied{background:var(--secondary-container);color:var(--on-secondary-container);}
 
-  /* ---------- Kiosk / demo mode ---------- */
-  #screen-kiosk{background:var(--bg);}
-  .kiosk-daytitle{
-    font-size:14.5px;font-weight:600;color:var(--text-secondary);
-    flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-    text-transform:capitalize;
-  }
-
   a{color:inherit;}
 </style>
 </head>
@@ -529,43 +545,6 @@
     </div>
   </section>
 
-  <!-- ===== Kiosk / demo mode ===== -->
-  <section class="screen" id="screen-kiosk">
-    <div class="header-sticky">
-      <div class="topbar">
-        <div class="topbar-left">
-          <div class="term-title" id="kiosk-term-title">—</div>
-          <div class="group-btn" style="cursor:default;">
-            <span id="kiosk-group-name">—</span>
-          </div>
-        </div>
-        <button class="icon-btn" id="kiosk-exit-btn" aria-label="Закрыть">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        </button>
-      </div>
-
-      <div class="toggles-row">
-        <div class="kiosk-daytitle" id="kiosk-daytitle">—</div>
-        <div class="week-badge" id="kiosk-week-badge">
-          <div class="wb-text">
-            <span class="wb-word">неделя</span>
-            <span class="wb-parity" id="kiosk-wb-parity">—</span>
-          </div>
-          <span class="wb-num" id="kiosk-wb-num">—</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="content" id="kiosk-content-wrap">
-      <div class="progress-card">
-        <div class="progress-top"><div class="now" id="kiosk-clock">00:00</div><div class="label" id="kiosk-next">—</div></div>
-        <div class="progress-track"><div class="progress-fill" id="kiosk-progress-fill" style="width:0%"></div></div>
-        <div class="progress-foot"><span id="kiosk-progress-from">—</span><span id="kiosk-progress-to">—</span></div>
-      </div>
-      <div id="kiosk-content"></div>
-    </div>
-  </section>
-
   <!-- ===== Group picker ===== -->
   <section class="screen" id="screen-pick">
     <div class="picker">
@@ -609,11 +588,11 @@
           </button>
         </div>
         <div class="week-badge" id="week-badge" title="Пары другой недели показаны серым">
+          <span class="wb-num" id="wb-num">—</span>
           <div class="wb-text">
             <span class="wb-word">неделя</span>
             <span class="wb-parity" id="wb-parity">—</span>
           </div>
-          <span class="wb-num" id="wb-num">—</span>
         </div>
       </div>
 
@@ -624,6 +603,9 @@
   </section>
 
 </div>
+
+<!-- Lesson-tile expand scrim -->
+<div class="lesson-scrim" id="lesson-scrim"></div>
 
 <!-- Settings sheet -->
 <div class="scrim" id="scrim"></div>
@@ -731,6 +713,10 @@
   var GITHUB_REPO = 'schedule-akrilk';
   var PAGE_URL = 'https://patrlza.github.io/schedule-akrilk/';
   var IDLE_DEMO_MS = 10*60*1000;
+  var IDLE_DEMO_TOUCHED_MS = 5*60*1000;
+  var kioskLive = false;             // true once the app auto-entered a public rotating display
+  var kioskTouchedSinceEntry = false;
+  var kioskGroupIdx = 0;
 
   var state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null, viewMode:'day' };
   var prefs = { theme:'light', demoEnabled:false };
@@ -1012,7 +998,7 @@
   // ---------- upload screen ----------
   var pendingFile = null;
   var lastInteractionAt = Date.now();
-  function markInteraction(){ lastInteractionAt = Date.now(); }
+  function markInteraction(){ lastInteractionAt = Date.now(); if(kioskLive) kioskTouchedSinceEntry = true; }
 
   function setUploadError(msg, isInfo){
     var box = $('upload-error');
@@ -1269,7 +1255,12 @@
     state.selectedGroup = g;
     var today = WEEKDAY_INDEX[new Date().getDay()];
     state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
-    await saveState();
+    if(kioskLive){
+      var gi = state.parsed.groups.indexOf(g);
+      if(gi>=0) kioskGroupIdx = gi;
+    } else {
+      await saveState();
+    }
     renderMain();
     show('screen-main');
     startTicking();
@@ -1393,8 +1384,83 @@
   }
 
   var BREAK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>';
+  var ALARM_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M5 3 2 6M19 3l3 3"/></svg>';
+  var CAL_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>';
 
-  function timelineHtml(lessons, relation){
+  // ---------- lesson tile expand (alarm / calendar) ----------
+  // Keyed on day+time+subject rather than array index, so an expanded card
+  // survives the periodic 20s re-render instead of collapsing on its own.
+  var expandedLessonKeys = {};
+  function lessonKey(day, l){ return day+'|'+(l.startMin!=null?l.startMin:'x')+'|'+(l.subject||''); }
+
+  function updateLessonScrim(){
+    var any = Object.keys(expandedLessonKeys).length>0;
+    $('lesson-scrim').classList.toggle('show', any);
+  }
+  function collapseAllLessonTiles(){
+    expandedLessonKeys = {};
+    document.querySelectorAll('.lesson.expanded').forEach(function(li){ li.classList.remove('expanded'); });
+    updateLessonScrim();
+  }
+
+  // Finds the next calendar date (today included) that falls on the given
+  // canonical weekday name — needed since the schedule only stores a day
+  // name and a time, not an actual date.
+  function nextDateForWeekday(dayName){
+    var targetIdx = null;
+    for(var k in WEEKDAY_INDEX){ if(WEEKDAY_INDEX[k]===dayName){ targetIdx = +k; break; } }
+    var d = new Date();
+    if(targetIdx==null) return d;
+    var diff = (targetIdx - d.getDay() + 7) % 7;
+    d.setDate(d.getDate()+diff);
+    return d;
+  }
+  function icsDate(date, minutes){
+    var d = new Date(date.getFullYear(), date.getMonth(), date.getDate(), Math.floor(minutes/60), minutes%60, 0);
+    var p=function(n,l){ n=''+n; while(n.length<(l||2)) n='0'+n; return n; };
+    return p(d.getFullYear(),4)+p(d.getMonth()+1)+p(d.getDate())+'T'+p(d.getHours())+p(d.getMinutes())+'00';
+  }
+  function icsEsc(s){ return (s||'').toString().replace(/([,;])/g,'\\$1').replace(/\n/g,'\\n'); }
+
+  // Prefills the phone's alarm-clock app 20 minutes before the lesson — the
+  // person only has to confirm it. Android-only (Chrome's intent: scheme);
+  // harmless no-op elsewhere.
+  function buildAlarmHref(l){
+    if(l.startMin==null) return null;
+    var alarmMin = l.startMin - 20;
+    if(alarmMin<0) alarmMin += 24*60;
+    var h = Math.floor(alarmMin/60), m = alarmMin%60;
+    return 'intent:#Intent;action=android.intent.action.SET_ALARM;'+
+      'i.android.intent.extra.alarm.HOUR='+h+';'+
+      'i.android.intent.extra.alarm.MINUTES='+m+';'+
+      'S.android.intent.extra.alarm.MESSAGE='+encodeURIComponent(l.subject||'Пара')+';'+
+      'S.android.intent.extra.alarm.SKIP_UI=false;end';
+  }
+  // A downloadable single-event .ics — opens whatever calendar app is set
+  // as default, so it isn't tied to one specific calendar app or OS.
+  function buildCalendarHref(day, l){
+    if(l.startMin==null || l.endMin==null) return null;
+    var date = nextDateForWeekday(day);
+    var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\n'+
+      'DTSTART:'+icsDate(date, l.startMin)+'\r\n'+
+      'DTEND:'+icsDate(date, l.endMin)+'\r\n'+
+      'SUMMARY:'+icsEsc(l.subject||'Пара')+'\r\n'+
+      (l.room? 'LOCATION:'+icsEsc(l.room)+'\r\n' : '')+
+      (l.teacher? 'DESCRIPTION:'+icsEsc(l.teacher)+'\r\n' : '')+
+      'END:VEVENT\r\nEND:VCALENDAR\r\n';
+    return 'data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+  }
+  function lessonActionsHtml(day, l){
+    var alarmHref = buildAlarmHref(l);
+    var calHref = buildCalendarHref(day, l);
+    if(!alarmHref && !calHref) return '';
+    return '<div class="lesson-actions">'+
+      (alarmHref? '<a class="lesson-action-btn" href="'+esc(alarmHref)+'">'+ALARM_ICON+'Будильник</a>' : '')+
+      (calHref? '<a class="lesson-action-btn" href="'+esc(calHref)+'" download="lesson.ics">'+CAL_ICON+'Календарь</a>' : '')+
+    '</div>';
+  }
+
+  function timelineHtml(lessons, relation, day){
     // relation: 'past' | 'today' | 'future'. Kept accepting a boolean too (true→'today', false→'future')
     // for any old call sites, so nothing else needs to change.
     if(relation===true) relation='today';
@@ -1452,20 +1518,27 @@
       var metaParts = [];
       if(l.teacher) metaParts.push(esc(l.teacher));
       if(l.room) metaParts.push(esc(l.room));
+      var tappable = !l.isGhost && l.startMin!=null;
+      var key = lessonKey(day, l);
+      var isExpanded = tappable && !!expandedLessonKeys[key];
       var lineCls2 = 'lesson';
       if(status==='done') lineCls2+=' is-done';
       if(status==='current') lineCls2+=' is-current';
       if(status==='ghost') lineCls2+=' is-ghost';
-      html += '<li class="'+lineCls2+'" style="animation-delay:'+(idx*35)+'ms">'+
+      if(tappable) lineCls2+=' is-tappable';
+      if(isExpanded) lineCls2+=' expanded';
+      html += '<li class="'+lineCls2+'" style="animation-delay:'+(idx*35)+'ms"'+(tappable? ' data-lesson-key="'+esc(key)+'"':'')+'>'+
         '<div class="lesson-time">'+
           (l.startLabel? '<div>'+esc(l.startLabel)+'</div>':'<div>'+esc(l.time)+'</div>')+
           (l.endLabel? '<div class="end">'+esc(l.endLabel)+'</div>':'')+
         '</div>'+
         '<div class="lesson-rail"><div class="lesson-dot"></div>'+(isLast?'':'<div class="lesson-line"></div>')+'</div>'+
         '<div class="lesson-card">'+
+          (tappable? '<div class="lesson-handle"></div>':'')+
           '<div class="lesson-head">'+lchip+'<div class="lesson-subject">'+esc(l.subject||'Занятие')+'</div></div>'+
           (metaParts.length? '<div class="lesson-meta">'+metaParts.join(' · ')+'</div>':'')+
           (l.note? '<div class="lesson-note">'+esc(l.note)+'</div>':'')+
+          (tappable? lessonActionsHtml(day, l) : '')+
         '</div>'+
       '</li>';
     });
@@ -1499,7 +1572,7 @@
         '<div class="progress-foot"><span>'+(prog.dayStart!=null? minToLabel(prog.dayStart):'—')+'</span><span>'+(prog.dayEnd!=null? minToLabel(prog.dayEnd):'—')+'</span></div>'+
       '</div>';
     }
-    html += timelineHtml(lessons, relation);
+    html += timelineHtml(lessons, relation, day);
     box.innerHTML = html;
   }
 
@@ -1518,7 +1591,7 @@
           var prog = computeDayProgress(lessons, relation);
           html += '<div class="week-progress"><div class="week-progress-fill" style="width:'+prog.pct+'%"></div></div>';
         }
-        html += timelineHtml(lessons, relation);
+        html += timelineHtml(lessons, relation, d);
       }
       html += '</div>';
     });
@@ -1573,6 +1646,24 @@
     renderContentDispatch();
   });
 
+  // Tap a lesson tile to reveal its alarm/calendar shortcuts. Delegated on
+  // the container so it keeps working across re-renders.
+  $('content').addEventListener('click', function(e){
+    if(e.target.closest('.lesson-actions')) return; // let the action link do its own thing
+    var li = e.target.closest('.lesson.is-tappable');
+    if(!li) return;
+    var key = li.getAttribute('data-lesson-key');
+    if(!key) return;
+    markInteraction();
+    if(expandedLessonKeys[key]){ delete expandedLessonKeys[key]; li.classList.remove('expanded'); }
+    else { expandedLessonKeys[key] = true; li.classList.add('expanded'); }
+    updateLessonScrim();
+  });
+  $('lesson-scrim').addEventListener('click', function(){
+    markInteraction();
+    collapseAllLessonTiles();
+  });
+
   // ---------- settings sheet ----------
   function openGenericSheet(sheetId, scrimId){
     $(scrimId).classList.add('show');
@@ -1609,6 +1700,7 @@
   });
   $('sheet-reupload').addEventListener('click', async function(){
     closeSheet();
+    kioskLive = false;
     // Just navigate to the entry screen — don't wipe the saved schedule/group.
     // A page refresh doesn't lose it either, so this shouldn't behave differently.
     pendingFile = null;
@@ -1648,7 +1740,7 @@
       // Turning it on is itself the "show me" action — jump straight into the
       // demo instead of making them wait another 10 idle minutes to see it.
       closeSheet();
-      enterKiosk();
+      enterKioskLive();
     }
   });
 
@@ -1681,66 +1773,13 @@
   });
 
   // ---------- kiosk / demo mode ----------
-  var kioskState = { active:false, groups:[], idx:0, rotateTimer:null, clockTimer:null };
-
-  function findCurrentLessonGroups(parsed){
-    var today = WEEKDAY_INDEX[new Date().getDay()];
-    var nm = nowMinutes();
-    var out = [];
-    parsed.groups.forEach(function(g){
-      var lessons = annotateParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []).filter(function(l){ return !l.isGhost; });
-      var hit = lessons.some(function(l){ return l.startMin!=null && nm>=l.startMin && nm<l.endMin; });
-      if(hit) out.push(g);
-    });
-    return out;
-  }
-
-  function stopKiosk(){
-    kioskState.active = false;
-    if(kioskState.rotateTimer){ clearInterval(kioskState.rotateTimer); kioskState.rotateTimer=null; }
-    if(kioskState.clockTimer){ clearInterval(kioskState.clockTimer); kioskState.clockTimer=null; }
-  }
-
-  function exitKiosk(){
-    stopKiosk();
-    markInteraction();
-    show('screen-upload');
-  }
-
-  function renderKioskGroup(){
-    var parsed = state.parsed;
-    var g = kioskState.groups[kioskState.idx];
-    if(!g) return;
-    var today = WEEKDAY_INDEX[new Date().getDay()];
-    var lessons = annotateParity((parsed.byGroup[g] && parsed.byGroup[g][today]) || []);
-    $('kiosk-term-title').textContent = parsed.term || 'Расписание';
-    $('kiosk-group-name').textContent = g;
-    $('kiosk-content').innerHTML = timelineHtml(lessons, 'today');
-    var prog = computeDayProgress(lessons, 'today');
-    $('kiosk-progress-fill').style.width = prog.pct+'%';
-    $('kiosk-progress-from').textContent = prog.dayStart!=null? minToLabel(prog.dayStart):'—';
-    $('kiosk-progress-to').textContent = prog.dayEnd!=null? minToLabel(prog.dayEnd):'—';
-    $('kiosk-next').textContent = prog.statusLabel;
-  }
-
-  function renderKioskWeekBadge(){
-    var info = getCurrentWeekInfo();
-    $('kiosk-wb-num').textContent = info.num;
-    $('kiosk-wb-parity').textContent = info.parity==='even' ? 'чётная' : 'нечётная';
-    var badge = $('kiosk-week-badge');
-    badge.classList.toggle('is-even', info.parity==='even');
-    badge.classList.toggle('is-odd', info.parity==='odd');
-  }
-
-  function tickKioskClock(){
-    $('kiosk-clock').textContent = fmtClock();
-    var d = new Date();
-    $('kiosk-daytitle').textContent = d.toLocaleDateString('ru-RU',{weekday:'long', day:'numeric', month:'long'});
-    renderKioskWeekBadge();
-    if(kioskState.active) renderKioskGroup();
-  }
-
-  async function enterKiosk(){
+  // Public-kiosk display: reuses the normal main screen (with full group
+  // switching) rather than a stripped-down view, so anyone can walk up, tap
+  // the group name, find their own schedule, and leave. Left alone, it keeps
+  // itself moving so it doesn't just sit on one group's schedule forever:
+  // if nobody ever touches the screen it advances every 10 minutes; once
+  // someone touches it, the next advance happens 5 minutes after they stop.
+  async function enterKioskLive(){
     if(!state.parsed){
       try{
         if(!ghSchedules.length) ghSchedules = await fetchGithubSchedules();
@@ -1753,34 +1792,52 @@
         state.fileName = ghSchedules[0].name;
       }catch(e){ return; }
     }
-    var candidates = findCurrentLessonGroups(state.parsed);
-    if(!candidates.length) return; // nobody has a lesson right now — stay on the login screen
+    if(!state.parsed.groups.length) return;
 
-    kioskState.active = true;
-    kioskState.groups = candidates;
-    kioskState.idx = 0;
-    show('screen-kiosk');
-    tickKioskClock();
-    kioskState.clockTimer = setInterval(tickKioskClock, 20000);
-    kioskState.rotateTimer = setInterval(function(){
-      var fresh = findCurrentLessonGroups(state.parsed);
-      kioskState.groups = fresh.length ? fresh : kioskState.groups;
-      kioskState.idx = (kioskState.idx+1) % kioskState.groups.length;
-      renderKioskGroup();
-    }, 10*60*1000);
+    kioskLive = true;
+    kioskTouchedSinceEntry = false;
+    kioskGroupIdx = 0;
+    state.selectedGroup = state.parsed.groups[kioskGroupIdx];
+    var today = WEEKDAY_INDEX[new Date().getDay()];
+    state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
+    state.viewMode = 'day';
+    renderMain();
+    show('screen-main');
+    startTicking();
+    lastInteractionAt = Date.now();
   }
 
-  $('kiosk-exit-btn').addEventListener('click', exitKiosk);
+  function advanceKioskGroup(){
+    if(!state.parsed || !state.parsed.groups.length) return;
+    kioskGroupIdx = (kioskGroupIdx+1) % state.parsed.groups.length;
+    state.selectedGroup = state.parsed.groups[kioskGroupIdx];
+    var today = WEEKDAY_INDEX[new Date().getDay()];
+    state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
+    renderMain();
+    kioskTouchedSinceEntry = false;
+    lastInteractionAt = Date.now();
+  }
 
-  // idle watcher — only fires while sitting on the login screen with demo mode on
+  // Single watcher covers both halves: waiting on the upload screen for the
+  // idle timeout to trigger kiosk-live, and — once live — deciding when to
+  // roll on to the next group.
   setInterval(function(){
-    if(!prefs.demoEnabled) return;
-    if(!$('screen-upload').classList.contains('active')) return;
-    if(Date.now() - lastInteractionAt < IDLE_DEMO_MS) return;
-    enterKiosk();
+    var idleMs = Date.now() - lastInteractionAt;
+    if(!kioskLive){
+      if(!prefs.demoEnabled) return;
+      if(!$('screen-upload').classList.contains('active')) return;
+      if(idleMs < IDLE_DEMO_MS) return;
+      enterKioskLive();
+      return;
+    }
+    if(!prefs.demoEnabled){ kioskLive = false; return; }
+    var threshold = kioskTouchedSinceEntry ? IDLE_DEMO_TOUCHED_MS : IDLE_DEMO_MS;
+    if(idleMs < threshold) return;
+    advanceKioskGroup();
   }, 15000);
-  document.addEventListener('pointerdown', function(e){
-    if($('screen-upload').classList.contains('active')) markInteraction();
+
+  document.addEventListener('pointerdown', function(){
+    markInteraction();
   });
 
   // ---------- boot ----------

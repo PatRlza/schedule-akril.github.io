@@ -480,10 +480,13 @@
   /* ---------- Share sheet ---------- */
   .share-title{font-size:17px;font-weight:700;text-align:center;padding:4px 4px 14px;}
   .share-qr-wrap{display:flex;justify-content:center;padding:4px 4px 16px;}
-  .share-qr-wrap img{border-radius:var(--radius-md);background:#fff;padding:10px;box-shadow:var(--shadow);}
+  .share-qr-wrap img{
+    border-radius:var(--radius-md);background:#fff;padding:10px;box-shadow:var(--shadow);
+    -webkit-touch-callout:none;-webkit-user-select:none;user-select:none;pointer-events:none;
+  }
   .share-link-row{
     display:flex;align-items:center;gap:8px;background:var(--surface-container);
-    border-radius:var(--radius-md);padding:11px 8px 11px 14px;margin-bottom:14px;
+    border-radius:var(--radius-md);padding:11px 8px 11px 14px;margin-top:14px;
   }
   .share-link-text{flex:1;font-size:12.5px;color:var(--text-secondary);font-family:'Roboto Mono',monospace;
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
@@ -683,11 +686,11 @@
   <div class="share-qr-wrap">
     <img id="share-qr-img" alt="QR-код ссылки" width="180" height="180">
   </div>
+  <button class="btn btn-filled btn-block" id="share-native-btn">Поделиться ссылкой…</button>
   <div class="share-link-row">
     <span class="share-link-text" id="share-link-text">patrlza.github.io/schedule-akrilk</span>
     <button class="share-copy-btn" id="share-copy-btn">Копировать</button>
   </div>
-  <button class="btn btn-filled btn-block" id="share-native-btn">Поделиться…</button>
 </div>
 
 <script>
@@ -735,7 +738,7 @@
   var PREFS_KEY = 'schedule-app-prefs-v1';
   // Bump this whenever the parsing logic changes — it guards against silently
   // showing a schedule that was parsed by an older, buggier version of this app.
-  var PARSER_VERSION = 3;
+  var PARSER_VERSION = 4;
   var GITHUB_OWNER = 'PatRlza';
   var GITHUB_REPO = 'schedule-akrilk';
   var PAGE_URL = 'https://patrlza.github.io/schedule-akrilk/';
@@ -745,7 +748,7 @@
   var kioskTouchedSinceEntry = false;
   var kioskGroupIdx = 0;
 
-  var state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null, viewMode:'day', browseMode:'group', selectedTeacher:null };
+  var state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null, viewMode:'day', browseMode:'group', selectedTeacher:null, ghName:null, ghDate:null };
   var prefs = { theme:'light', demoEnabled:false };
   var tickTimer=null;
   var BREAK_MIN_GAP = 15;   // minutes — shorter gaps are just passing time between pairs
@@ -786,13 +789,14 @@
     try{
       await kvSet(STORAGE_KEY, JSON.stringify({
         parsed: state.parsed, selectedGroup: state.selectedGroup,
-        savedAt: state.savedAt, fileName: state.fileName, parserVersion: PARSER_VERSION
+        savedAt: state.savedAt, fileName: state.fileName, parserVersion: PARSER_VERSION,
+        ghName: state.ghName, ghDate: state.ghDate
       }));
     }catch(e){ /* best effort */ }
   }
   async function clearState(){
     await kvDelete(STORAGE_KEY);
-    state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null };
+    state = { parsed:null, selectedGroup:null, viewedDay:null, savedAt:null, fileName:null, ghName:null, ghDate:null };
   }
 
   async function loadPrefs(){
@@ -954,16 +958,12 @@
           if(!byGroup[gname][currentDay]) byGroup[gname][currentDay]=[];
 
           if(hasHere && hasNext){
-            if(rawHere.trim()===rawNext.trim()){
-              // A merged cell can get its text duplicated into both rows by the
-              // XLSX reader — that's one lesson every week, not two alternating
-              // ones, otherwise it'd wrongly show up "on both weeks" at once.
-              pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, null);
-            } else {
-              // Two different subjects alternating week to week in the same slot.
-              pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, 'even');
-              pushLesson(byGroup[gname][currentDay], rawNext, tp.startMin, tp.endMin, 'odd');
-            }
+            // Two rows filled for this slot: the time-row text runs on even
+            // ("чётная") weeks, the row below it on odd ("нечётная") weeks —
+            // even when both happen to be the exact same subject/teacher/room,
+            // that still means "every other week", not "every week".
+            pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, 'even');
+            pushLesson(byGroup[gname][currentDay], rawNext, tp.startMin, tp.endMin, 'odd');
           } else if(hasHere){
             pushLesson(byGroup[gname][currentDay], rawHere, tp.startMin, tp.endMin, null);
           } else if(hasNext){
@@ -1044,7 +1044,9 @@
 
   // Shared by "загрузить своё" and by picking a schedule fetched from GitHub —
   // both end up with an ArrayBuffer that needs the same parse-and-proceed steps.
-  function loadWorkbookAndProceed(arrayBuffer, sourceLabel){
+  // ghMeta (name + date) is only set for the GitHub path — it's what lets the
+  // app later notice "the file this came from has since been replaced".
+  function loadWorkbookAndProceed(arrayBuffer, sourceLabel, ghMeta){
     try{
       var data = new Uint8Array(arrayBuffer);
       var wb = XLSX.read(data, {type:'array'});
@@ -1052,6 +1054,8 @@
       state.parsed = parsed;
       state.fileName = sourceLabel;
       state.savedAt = new Date().toISOString();
+      state.ghName = ghMeta ? ghMeta.name : null;
+      state.ghDate = ghMeta ? (ghMeta.date || null) : null;
       renderGroupPicker();
       show('screen-pick');
       return true;
@@ -1134,7 +1138,7 @@
       var res = await fetch(f.url);
       if(!res.ok) throw new Error('fetch_failed');
       var buf = await res.arrayBuffer();
-      loadWorkbookAndProceed(buf, f.name);
+      loadWorkbookAndProceed(buf, f.name, f);
     }catch(e){
       setUploadError('Не удалось загрузить файл с GitHub. Проверьте связь или загрузите файл вручную.');
     }
@@ -1200,6 +1204,8 @@
         });
       });
     }
+
+    await checkQuickContinueFreshness();
   }
 
   $('gh-expand-btn').addEventListener('click', function(){
@@ -1212,7 +1218,10 @@
   });
 
   // ---------- quick continue (remembered group) ----------
+  var lastQuickContinueSaved = null; // whatever renderQuickContinue is currently showing, for the freshness check below
+
   function renderQuickContinue(saved){
+    lastQuickContinueSaved = saved;
     if(saved && saved.parsed && saved.selectedGroup && saved.parsed.byGroup[saved.selectedGroup]){
       $('qc-group').textContent = saved.selectedGroup;
       $('qc-sub').textContent = 'открыть расписание';
@@ -1223,6 +1232,8 @@
         state.selectedGroup = saved.selectedGroup;
         state.savedAt = saved.savedAt;
         state.fileName = saved.fileName;
+        state.ghName = saved.ghName || null;
+        state.ghDate = saved.ghDate || null;
         var today = WEEKDAY_INDEX[new Date().getDay()];
         state.viewedDay = state.parsed.dayOrder.indexOf(today)>=0 ? today : state.parsed.dayOrder[0];
         renderMain();
@@ -1231,6 +1242,26 @@
       };
     } else {
       $('quick-continue').style.display='none';
+    }
+  }
+
+  // If the saved schedule behind "Продолжить" came from GitHub and a newer
+  // file has since shown up there (a different file, or the same one
+  // re-uploaded with new content), that button would otherwise keep quietly
+  // reopening the stale version forever — so drop it and point at the fresh one.
+  function isNewerGithubFile(latest, savedName, savedDate){
+    if(!latest || !savedName) return false;
+    if(latest.name !== savedName) return true;
+    if(!savedDate || !latest.date) return false; // nothing to compare — assume unchanged
+    return new Date(latest.date).getTime() > new Date(savedDate).getTime();
+  }
+  async function checkQuickContinueFreshness(){
+    if(!lastQuickContinueSaved || !lastQuickContinueSaved.ghName) return; // only applies to GitHub-sourced saves
+    if(!ghSchedules.length) return;
+    if(isNewerGithubFile(ghSchedules[0], lastQuickContinueSaved.ghName, lastQuickContinueSaved.ghDate)){
+      await clearState();
+      renderQuickContinue(null);
+      setUploadError('Появилось новое расписание — сохранённое больше не актуально, выберите свежий файл ниже.', true);
     }
   }
 
@@ -1880,6 +1911,7 @@
     var validSaved = (saved && !isStale && saved.parsed && saved.selectedGroup && saved.parsed.byGroup[saved.selectedGroup]) ? saved : null;
     renderQuickContinue(validSaved);
     show('screen-upload');
+    initGithubSchedules();
   });
 
   // ---------- theme ----------
